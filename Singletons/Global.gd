@@ -59,8 +59,8 @@ func _on_connected_to_server() -> void:
 	# Send our player name to the server
 	# The server will sync back to us after receiving our name
 	var player_name: String = str(local_id)
-	if SteamInit.steam_running and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
-		player_name = Steam.getPersonaName()
+	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+		player_name = SteamInit.steam_name
 
 	if not players.has(local_id):
 		players[local_id] = {

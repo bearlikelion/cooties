@@ -3,6 +3,7 @@ extends Node
 var steam_running: bool = true
 var lobby_id: int = 0
 var peer: SteamMultiplayerPeer = SteamMultiplayerPeer.new()
+var steam_name: String
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -11,6 +12,7 @@ func _ready() -> void:
 
 	if init_steam['status'] > Steam.STEAM_API_INIT_RESULT_OK:
 		steam_running = false
+		steam_name = Steam.getPersonaName()
 
 
 func _process(_delta: float) -> void:
