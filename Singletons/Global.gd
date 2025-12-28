@@ -28,7 +28,7 @@ func change_level(scene_path: String) -> void:
 # Called when a peer connects
 func _on_peer_connected(peer_id: int) -> void:
 	print("GLOBAL PEER CONNECTED: %d" % peer_id)
-	if not players.has(peer_id):
+	if not players.has(peer_id) and not multiplayer.is_server():
 		get_player_from_server.rpc_id(1, peer_id)
 
 
@@ -63,22 +63,23 @@ func _on_connected_to_server() -> void:
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		player_name = SteamInit.steam_name
 
-	var player_data: Dictionary = {
+	Global.players[local_id] = {
 		"character": -1,
 		"name": player_name,
 		"score": 0
 	}
 
-	send_player_to_server.rpc_id(1, player_data)
+	send_player_to_server.rpc_id(1, Global.players[local_id])
 
 
 @rpc("any_peer", "call_remote", "reliable")
 func send_player_to_server(player: Dictionary) -> void:
 	if multiplayer.is_server():
+		print("SERVER RECEIVED PLAYER DATA")
 		var sender_id: int = multiplayer.get_remote_sender_id()
 		players[sender_id] = player
 
-		_sync_players_to_peer(players)
+		_sync_players_to_peer.rpc_id(sender_id, players)
 
 
 # Called when server disconnects

@@ -18,7 +18,7 @@ func _ready() -> void:
 		character_option.disabled = true
 		ready_button.disabled = true
 
-		if Global.players[int(name)].character > -1:
+		if Global.players.has(int(name)) and Global.players[int(name)].character > -1:
 			_update_character_sprite(Global.players[int(name)].character)
 			character_option.select(Global.players[int(name)].character)
 	else:
@@ -35,8 +35,8 @@ func _ready() -> void:
 			character_option.select(random_character_index)
 			character_option.item_selected.emit(random_character_index)
 		else:
-			character_option.select(Global.players[multiplayer.get_unique_id()].character)
 			_update_character_sprite(Global.players[multiplayer.get_unique_id()].character)
+			character_option.select(Global.players[multiplayer.get_unique_id()].character)
 
 
 func _on_character_changed(index: int) -> void:

@@ -38,8 +38,7 @@ func _on_join_game_pressed() -> void:
 		MultiplayerBackend.STEAM:
 			enet.hide()
 			steam.show()
-
-	get_lobbies()
+			get_lobbies()
 
 
 func _on_lobby_match_list(lobbies: Array) -> void:
