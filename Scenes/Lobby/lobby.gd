@@ -12,6 +12,9 @@ var upnp_thread: Thread
 func _ready() -> void:
 	add_to_group("lobby")
 
+	# Reset scores when returning to lobby
+	Global.reset_scores()
+
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer and SteamInit.lobby_id > 0:
 		lobby_id.text = "Lobby ID: %s" % SteamInit.lobby_id
 	elif multiplayer.multiplayer_peer is ENetMultiplayerPeer:

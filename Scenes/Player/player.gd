@@ -27,7 +27,7 @@ var is_wall_sliding: bool = false
 var was_on_floor: bool = false
 var is_infected: bool = false
 
-@onready var infected: GPUParticles2D = $Infected
+@onready var infected_particles: GPUParticles2D = $Infected
 @onready var wall_check_left: RayCast2D = $WallCheckLeft
 @onready var wall_check_right: RayCast2D = $WallCheckRight
 @onready var infection_area: Area2D = $InfectionArea
@@ -195,6 +195,8 @@ func _on_infection_area_body_entered(body: Node2D) -> void:
 func set_infected(infected_state: bool) -> void:
 	is_infected = infected_state
 
-	if infected:
+	if infected_particles:
+		infected_particles.emitting = infected_state
+
+	if is_infected:
 		fart_sound.play()
-		infected.emitting = infected_state

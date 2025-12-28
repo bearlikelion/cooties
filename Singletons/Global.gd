@@ -30,7 +30,7 @@ func _on_peer_connected(peer_id: int) -> void:
 	print("GLOBAL PEER CONNECTED: %d" % peer_id)
 	if not players.has(peer_id):
 		players[peer_id] = {
-			"character": 0,
+			"character": -1,
 			"name": str(peer_id),
 			"score": 0
 		}
@@ -50,7 +50,7 @@ func _on_connected_to_server() -> void:
 	var local_id: int = multiplayer.get_unique_id()
 	if not players.has(local_id):
 		players[local_id] = {
-			"character": 0,
+			"character": -1,
 			"name": str(local_id),
 			"score": 0
 		}
@@ -72,19 +72,20 @@ func _on_server_disconnected() -> void:
 # Set player character selection via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_character(peer_id: int, character_index: int) -> void:
-	if not players.has(peer_id):
-		players[peer_id] = {"character": character_index, "name": str(peer_id), "score": 0}
-	else:
-		players[peer_id]["character"] = character_index
+	if peer_id > 0:
+		if not players.has(peer_id):
+			players[peer_id] = {"character": character_index, "name": str(peer_id), "score": 0}
+		else:
+			players[peer_id]["character"] = character_index
 
-	player_info_updated.emit(peer_id)
+		player_info_updated.emit(peer_id)
 
 
 # Set player name via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_name(peer_id: int, player_name: String) -> void:
 	if not players.has(peer_id):
-		players[peer_id] = {"character": 0, "name": player_name, "score": 0}
+		players[peer_id] = {"character": -1, "name": player_name, "score": 0}
 	else:
 		players[peer_id]["name"] = player_name
 
@@ -124,7 +125,7 @@ func get_player_score(peer_id: int) -> int:
 @rpc("any_peer", "call_local", "reliable")
 func set_player_score(peer_id: int, new_score: int) -> void:
 	if not players.has(peer_id):
-		players[peer_id] = {"character": 0, "name": str(peer_id), "score": new_score}
+		players[peer_id] = {"character": -1, "name": str(peer_id), "score": new_score}
 	else:
 		players[peer_id]["score"] = new_score
 
@@ -134,6 +135,23 @@ func set_player_score(peer_id: int, new_score: int) -> void:
 # Clear all player data
 func clear_players() -> void:
 	players.clear()
+
+
+# Reset all player scores to 0 and clean up invalid peer_ids
+func reset_scores() -> void:
+	var invalid_peers: Array[int] = []
+
+	# Find invalid peer_ids
+	for peer_id: int in players.keys():
+		if peer_id <= 0:
+			invalid_peers.append(peer_id)
+		else:
+			players[peer_id]["score"] = 0
+
+	# Remove invalid peer_ids
+	for peer_id: int in invalid_peers:
+		push_error("Removing invalid peer_id %d from Global.players" % peer_id)
+		players.erase(peer_id)
 
 
 # Add local player to the players dictionary (call this after creating server/client)
@@ -148,7 +166,7 @@ func add_local_player() -> void:
 
 	if not players.has(local_id):
 		players[local_id] = {
-			"character": 0,
+			"character": -1,
 			"name": player_name,
 			"score": 0
 		}

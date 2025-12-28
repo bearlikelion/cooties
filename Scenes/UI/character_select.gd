@@ -27,11 +27,15 @@ func _ready() -> void:
 		# Color yourself green
 		player_name.modulate = Color("#6fb365")
 
-		# Select random character
-		# HACK Godot doesn't emit the item_selected signal when using the select(index: int) function
-		var random_character_index: int = randi_range(0, 3)
-		character_option.select(random_character_index)
-		character_option.item_selected.emit(random_character_index)
+		if Global.players[multiplayer.get_unique_id()].character == -1:
+			# Select random character
+			# HACK Godot doesn't emit the item_selected signal when using the select(index: int) function
+			var random_character_index: int = randi_range(0, 3)
+			character_option.select(random_character_index)
+			character_option.item_selected.emit(random_character_index)
+		else:
+			character_option.select(Global.players[multiplayer.get_unique_id()].character)
+			_update_character_sprite(Global.players[multiplayer.get_unique_id()].character)
 
 
 func _on_character_changed(index: int) -> void:

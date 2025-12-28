@@ -19,7 +19,6 @@ var score_tick_timer: Timer
 @onready var players_node: Node = $PlayerSpawner/Players
 @onready var hud: HUD = $HUD
 @onready var spawn_points_node: Node = $PlayerSpawner/SpawnPoints
-@onready var fart_sound: AudioStreamPlayer = $FartSound
 
 
 func _ready() -> void:
