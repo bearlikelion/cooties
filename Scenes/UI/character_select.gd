@@ -12,13 +12,21 @@ var is_ready: bool = false
 
 func _ready() -> void:
 	if not is_multiplayer_authority():
+		# Disable character select for other players
 		character_option.disabled = true
 		ready_button.disabled = true
 	else:
+		character_option.item_selected.connect(_on_character_changed)
+		ready_button.toggled.connect(_on_ready_button_toggled)
+
+		# Color yourself green
 		player_name.modulate = Color("#6fb365")
 
-	character_option.item_selected.connect(_on_character_changed)
-	ready_button.toggled.connect(_on_ready_button_toggled)
+		# Select random character
+		# HACK Godot doesn't emit the item_selected signal when using the select(index: int) function
+		var random_character_index: int = randi_range(0, 3)
+		character_option.select(random_character_index)
+		character_option.item_selected.emit(random_character_index)
 
 
 func _on_character_changed(index: int) -> void:

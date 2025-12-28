@@ -4,9 +4,13 @@ extends MultiplayerSpawner
 const PLAYER_SCENE = preload("res://Scenes/Player/player.tscn")
 
 @onready var spawn_points: Array[Node] = $SpawnPoints.get_children()
+@onready var players: Node = $Players
+
 
 func _ready() -> void:
 	spawn_function = spawn_player
+
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 	# Only the server should spawn players
 	if multiplayer.is_server():
@@ -39,3 +43,9 @@ func spawn_player(peer_id: int) -> Player:
 
 	player.animated_sprite_2d.sprite_frames = character_sprite
 	return player
+
+
+func _on_peer_disconnected(peer_id: int) -> void:
+	var disconnected_player: Player = players.get_node_or_null(str(peer_id))
+	if disconnected_player:
+		disconnected_player.queue_free()

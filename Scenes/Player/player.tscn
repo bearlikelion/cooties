@@ -82,7 +82,7 @@ position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_7g0yx")
 
 [node name="WallCheckLeft" type="RayCast2D" parent="."]
-target_position = Vector2(-20, 0)
+target_position = Vector2(-15, 0)
 
 [node name="WallCheckRight" type="RayCast2D" parent="."]
-target_position = Vector2(20, 0)
+target_position = Vector2(15, 0)
