@@ -25,9 +25,12 @@ extends CharacterBody2D
 var has_double_jump: bool = true
 var is_wall_sliding: bool = false
 var was_on_floor: bool = false
+var is_infected: bool = false
 
+@onready var infected: GPUParticles2D = $Infected
 @onready var wall_check_left: RayCast2D = $WallCheckLeft
 @onready var wall_check_right: RayCast2D = $WallCheckRight
+@onready var infection_area: Area2D = $InfectionArea
 
 
 func _ready() -> void:
@@ -38,6 +41,10 @@ func _ready() -> void:
 
 	if not is_multiplayer_authority():
 		physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
+
+	# Server-only infection collision detection
+	if multiplayer.is_server() and infection_area:
+		infection_area.body_entered.connect(_on_infection_area_body_entered)
 
 
 func _physics_process(delta: float) -> void:
@@ -170,3 +177,22 @@ func _update_animation() -> void:
 		animated_sprite_2d.play("run")
 	else:
 		animated_sprite_2d.play("idle")
+
+
+# Server-only: Detect infection collision
+func _on_infection_area_body_entered(body: Node2D) -> void:
+	if not multiplayer.is_server() or not is_infected:
+		return
+
+	if body is Player and not body.is_infected:
+		var game: Game = get_tree().get_first_node_in_group("game")
+		if game:
+			game.infect_player(int(body.name))
+
+
+# Set infection state and update particle effect
+func set_infected(infected_state: bool) -> void:
+	is_infected = infected_state
+
+	if infected:
+		infected.emitting = infected_state

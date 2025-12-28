@@ -9,7 +9,7 @@ enum Characters { VIRTUALGUY, PINKMAN, NINJAFROG, MASKDUDE }
 var ip_address: String = "127.0.0.1"
 
 # Dictionary storing player information by peer_id
-# Structure: {peer_id: {character: int, name: String}}
+# Structure: {peer_id: {character: int, name: String, score: int}}
 var players: Dictionary = {}
 
 
@@ -31,7 +31,8 @@ func _on_peer_connected(peer_id: int) -> void:
 	if not players.has(peer_id):
 		players[peer_id] = {
 			"character": 0,
-			"name": str(peer_id)
+			"name": str(peer_id),
+			"score": 0
 		}
 
 
@@ -50,7 +51,8 @@ func _on_connected_to_server() -> void:
 	if not players.has(local_id):
 		players[local_id] = {
 			"character": 0,
-			"name": str(local_id)
+			"name": str(local_id),
+			"score": 0
 		}
 
 	# Send our player name to the server
@@ -71,7 +73,7 @@ func _on_server_disconnected() -> void:
 @rpc("any_peer", "call_local", "reliable")
 func set_player_character(peer_id: int, character_index: int) -> void:
 	if not players.has(peer_id):
-		players[peer_id] = {"character": character_index, "name": str(peer_id)}
+		players[peer_id] = {"character": character_index, "name": str(peer_id), "score": 0}
 	else:
 		players[peer_id]["character"] = character_index
 
@@ -82,7 +84,7 @@ func set_player_character(peer_id: int, character_index: int) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func set_player_name(peer_id: int, player_name: String) -> void:
 	if not players.has(peer_id):
-		players[peer_id] = {"character": 0, "name": player_name}
+		players[peer_id] = {"character": 0, "name": player_name, "score": 0}
 	else:
 		players[peer_id]["name"] = player_name
 
@@ -111,6 +113,24 @@ func get_player_name(peer_id: int) -> String:
 	return str(peer_id)
 
 
+# Get player score
+func get_player_score(peer_id: int) -> int:
+	if players.has(peer_id):
+		return players[peer_id].get("score", 0)
+	return 0
+
+
+# Set player score via RPC
+@rpc("any_peer", "call_local", "reliable")
+func set_player_score(peer_id: int, new_score: int) -> void:
+	if not players.has(peer_id):
+		players[peer_id] = {"character": 0, "name": str(peer_id), "score": new_score}
+	else:
+		players[peer_id]["score"] = new_score
+
+	player_info_updated.emit(peer_id)
+
+
 # Clear all player data
 func clear_players() -> void:
 	players.clear()
@@ -129,7 +149,8 @@ func add_local_player() -> void:
 	if not players.has(local_id):
 		players[local_id] = {
 			"character": 0,
-			"name": player_name
+			"name": player_name,
+			"score": 0
 		}
 
 	# Broadcast our name to all clients

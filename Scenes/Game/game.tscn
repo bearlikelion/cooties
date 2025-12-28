@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=4 uid="uid://djdrs1ttx56ws"]
+[gd_scene load_steps=11 format=4 uid="uid://djdrs1ttx56ws"]
 
 [ext_resource type="PackedScene" uid="uid://bo56j43srbd" path="res://Scenes/UI/hud.tscn" id="1_ciybh"]
+[ext_resource type="Script" uid="uid://cg7uqwvlfj70i" path="res://Scenes/Game/game.gd" id="1_flgk0"]
 [ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_qxfds"]
 [ext_resource type="Texture2D" uid="uid://j0hk7wu6dy6v" path="res://Assets/Images/Backgrounds/Brown.png" id="2_qikps"]
 [ext_resource type="Texture2D" uid="uid://co54x5vi4i6hs" path="res://Assets/Images/Terrain/Terrain (16x16).png" id="3_qikps"]
 [ext_resource type="Script" uid="uid://brptd8mnwrmiy" path="res://Scenes/Game/player_spawner.gd" id="4_i1e5p"]
+[ext_resource type="AudioStream" uid="uid://d0aeo3xo6gx6e" path="res://Assets/Audio/SFX/249583__ycbcr__short-definite-fart.ogg" id="7_vifcx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i1e5p"]
 shader = ExtResource("1_qxfds")
@@ -230,6 +232,7 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i1e5p")
 
 [node name="Game" type="Node"]
+script = ExtResource("1_flgk0")
 
 [node name="HUD" parent="." instance=ExtResource("1_ciybh")]
 
@@ -267,3 +270,7 @@ position = Vector2(1048, 40)
 
 [node name="Marker2D4" type="Marker2D" parent="PlayerSpawner/SpawnPoints"]
 position = Vector2(104, 40)
+
+[node name="FartSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_vifcx")
+volume_db = -15.0
