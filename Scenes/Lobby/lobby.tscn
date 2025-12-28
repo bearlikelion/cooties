@@ -88,7 +88,9 @@ size_flags_horizontal = 4
 size_flags_vertical = 6
 
 [node name="Disconnect" type="Button" parent="MarginContainer/VBoxContainer"]
+modulate = Color(0.84313726, 0, 0.27058825, 1)
 layout_mode = 2
+size_flags_horizontal = 4
 theme = ExtResource("4_tiinm")
 text = "Disconnect"
 

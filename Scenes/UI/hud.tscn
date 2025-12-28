@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo56j43srbd"]
+
+[ext_resource type="Script" uid="uid://c3itcmfqbdw6o" path="res://Scenes/UI/hud.gd" id="1_sprlj"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="2_ny26j"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_sprlj")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 5
+
+[node name="Rounds" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="RoundLabel" type="Label" parent="MarginContainer/Rounds"]
+layout_mode = 2
+theme = ExtResource("2_ny26j")
+theme_override_font_sizes/font_size = 32
+text = "Round:"
+
+[node name="CurrentRound" type="Label" parent="MarginContainer/Rounds"]
+layout_mode = 2
+theme = ExtResource("2_ny26j")
+theme_override_font_sizes/font_size = 32
+text = "1"
+
+[node name="Separator" type="Label" parent="MarginContainer/Rounds"]
+layout_mode = 2
+theme = ExtResource("2_ny26j")
+text = "of"
+
+[node name="MaxRound" type="Label" parent="MarginContainer/Rounds"]
+layout_mode = 2
+theme = ExtResource("2_ny26j")
+theme_override_font_sizes/font_size = 32
+text = "5"
+
+[node name="Scores" type="HBoxContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/separation = 100

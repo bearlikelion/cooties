@@ -41,7 +41,6 @@ hue_variation_min = -0.15000002
 hue_variation_max = 0.14999998
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7g0yx"]
-radius = 12.0
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite_2d", "player_name")]
 script = ExtResource("1_a3d8c")
@@ -72,14 +71,14 @@ emitting = false
 amount = 24
 process_material = SubResource("ParticleProcessMaterial_htcer")
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("CircleShape2D_7g0yx")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_a3d8c")
 animation = &"wall_jump"
 autoplay = "idle"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 3)
-shape = SubResource("CircleShape2D_7g0yx")
 
 [node name="WallCheckLeft" type="RayCast2D" parent="."]
 target_position = Vector2(-15, 0)

@@ -30,7 +30,7 @@ shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_qgdf6"]
 font_size = 24
-font_color = Color(0.96589893, 0, 0.31451052, 1)
+font_color = Color(0.8414915, 0, 0.26916212, 1)
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 shadow_color = Color(0, 0, 0, 1)

@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=4 uid="uid://djdrs1ttx56ws"]
+[gd_scene load_steps=9 format=4 uid="uid://djdrs1ttx56ws"]
 
+[ext_resource type="PackedScene" uid="uid://bo56j43srbd" path="res://Scenes/UI/hud.tscn" id="1_ciybh"]
 [ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_qxfds"]
 [ext_resource type="Texture2D" uid="uid://j0hk7wu6dy6v" path="res://Assets/Images/Backgrounds/Brown.png" id="2_qikps"]
 [ext_resource type="Texture2D" uid="uid://co54x5vi4i6hs" path="res://Assets/Images/Terrain/Terrain (16x16).png" id="3_qikps"]
@@ -229,6 +230,8 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i1e5p")
 
 [node name="Game" type="Node"]
+
+[node name="HUD" parent="." instance=ExtResource("1_ciybh")]
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_i1e5p")

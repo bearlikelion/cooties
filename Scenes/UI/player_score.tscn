@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3 uid="uid://np8r7q2vj80y"]
+
+[ext_resource type="Script" uid="uid://df3sfpwfd5llv" path="res://Scenes/UI/player_score.gd" id="1_853ir"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="1_ilc2a"]
+[ext_resource type="Texture2D" uid="uid://bo330h6byj45u" path="res://Assets/Images/Characters/Virtual Guy/Jump (32x32).png" id="2_71ba4"]
+
+[node name="PlayerScore" type="VBoxContainer" node_paths=PackedStringArray("player_name", "player_sprite")]
+custom_minimum_size = Vector2(200, 0)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -139.5
+offset_top = -137.0
+offset_right = 139.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+alignment = 2
+script = ExtResource("1_853ir")
+player_name = NodePath("PlayerName")
+player_sprite = NodePath("HBoxContainer/PlayerSprite")
+
+[node name="PlayerName" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_ilc2a")
+text = "Player Name"
+horizontal_alignment = 1
+clip_text = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="PlayerSprite" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_71ba4")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="PlayerScore" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_ilc2a")
+theme_override_font_sizes/font_size = 48
+text = "0"
+horizontal_alignment = 1
