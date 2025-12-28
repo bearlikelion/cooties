@@ -29,11 +29,18 @@ func change_level(scene_path: String) -> void:
 func _on_peer_connected(peer_id: int) -> void:
 	print("GLOBAL PEER CONNECTED: %d" % peer_id)
 	if not players.has(peer_id):
+		var player_name: String = str(peer_id)
+		if peer_id == multiplayer.get_unique_id()\
+		and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+			player_name = Steam.getPersonaName()
+
 		players[peer_id] = {
 			"character": -1,
-			"name": str(peer_id),
+			"name": player_name,
 			"score": 0
 		}
+
+		set_player_name.rpc(peer_id, player_name)
 
 
 # Called when a peer disconnects
@@ -48,12 +55,6 @@ func _on_peer_disconnected(peer_id: int) -> void:
 func _on_connected_to_server() -> void:
 	print("GLOBAL CONNECTED TO SERVER")
 	var local_id: int = multiplayer.get_unique_id()
-	if not players.has(local_id):
-		players[local_id] = {
-			"character": -1,
-			"name": str(local_id),
-			"score": 0
-		}
 
 	# Send our player name to the server
 	# The server will sync back to us after receiving our name
@@ -61,7 +62,15 @@ func _on_connected_to_server() -> void:
 	if SteamInit.steam_running and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		player_name = Steam.getPersonaName()
 
-	set_player_name.rpc_id(1, local_id, player_name)
+	if not players.has(local_id):
+		players[local_id] = {
+			"character": -1,
+			"name": player_name,
+			"score": 0
+		}
+
+	if multiplayer.is_server():
+		_sync_players_to_peer(players)
 
 
 # Called when server disconnects
@@ -75,29 +84,19 @@ func set_player_character(peer_id: int, character_index: int) -> void:
 	# HACK: This is a hacky bugfix for an issue when returning to lobbby after a game ends
 	# The character_select.gd runs set_player_character too early sending as peer_id 0
 	if peer_id > 0:
-		if not players.has(peer_id):
-			players[peer_id] = {"character": character_index, "name": str(peer_id), "score": 0}
-		else:
-			players[peer_id]["character"] = character_index
-
+		players[peer_id]["character"] = character_index
 		player_info_updated.emit(peer_id)
 
 
 # Set player name via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_name(peer_id: int, player_name: String) -> void:
-	if not players.has(peer_id):
-		players[peer_id] = {"character": -1, "name": player_name, "score": 0}
-	else:
-		players[peer_id]["name"] = player_name
+	players[peer_id]["name"] = player_name
 
 	# If we're the server and received a name from a client, sync back to them
-	if multiplayer.is_server():
-		var sender_id: int = multiplayer.get_remote_sender_id()
-		var local_id: int = multiplayer.get_unique_id()
+	if multiplayer.is_server() and peer_id != 1:
 		# Only sync to remote clients, never to ourselves
-		if sender_id != local_id and sender_id == peer_id:
-			_sync_players_to_peer.rpc_id(sender_id, players)
+		_sync_players_to_peer.rpc_id(peer_id, players)
 
 	player_info_updated.emit(peer_id)
 
@@ -126,11 +125,7 @@ func get_player_score(peer_id: int) -> int:
 # Set player score via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_score(peer_id: int, new_score: int) -> void:
-	if not players.has(peer_id):
-		players[peer_id] = {"character": -1, "name": str(peer_id), "score": new_score}
-	else:
-		players[peer_id]["score"] = new_score
-
+	players[peer_id]["score"] = new_score
 	player_info_updated.emit(peer_id)
 
 

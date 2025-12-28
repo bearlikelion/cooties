@@ -120,10 +120,12 @@ func _exit_tree() -> void:
 
 
 func _on_disconnect_pressed() -> void:
+	# If Steam, leave lobby and reset peer
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		Steam.leaveLobby(SteamInit.lobby_id)
 		SteamInit.peer = SteamMultiplayerPeer.new()
 
-	Global.players.clear()
+	# Reset players array and fallback to OfflineMultiplayerPeer
+	Global.clear_players()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	Global.change_level("res://Scenes/MainMenu/main_menu.tscn")
