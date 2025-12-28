@@ -31,14 +31,14 @@ particle_flag_disable_z = true
 direction = Vector3(1, -10, 0)
 spread = 66.0
 initial_velocity_min = 20.0
-initial_velocity_max = 40.0
-gravity = Vector3(0, -8, 0)
+initial_velocity_max = 60.0
+gravity = Vector3(0, -15, 0)
 scale_min = 5.0
-scale_max = 10.0
+scale_max = 15.0
 scale_curve = SubResource("CurveTexture_mtuoh")
 color = Color(0.7977378, 0.9063318, 0.58383155, 0.90000004)
-hue_variation_min = -0.15000002
-hue_variation_max = 0.14999998
+hue_variation_min = -0.33
+hue_variation_max = 0.32999998
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xpcdj"]
 radius = 15.0
@@ -70,8 +70,8 @@ text = "NAME"
 horizontal_alignment = 1
 
 [node name="Infected" type="GPUParticles2D" parent="."]
-emitting = false
-amount = 24
+amount = 30
+lifetime = 1.2
 process_material = SubResource("ParticleProcessMaterial_htcer")
 
 [node name="InfectionArea" type="Area2D" parent="."]

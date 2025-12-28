@@ -67,7 +67,8 @@ func _start_round() -> void:
 	print("Starting Round %d of %d" % [current_round, max_rounds])
 
 	# Respawn all players at randomized spawn points
-	_respawn_players()
+	if current_round > 1:
+		_respawn_players()
 
 	# Update UI for all clients
 	_update_round_state.rpc(current_round, GameState.WAITING)
@@ -93,6 +94,7 @@ func _on_round_delay_complete() -> void:
 	# Select random player to be infected
 	var random_infected: Player = all_players.pick_random()
 	_set_player_infected.rpc(int(random_infected.name), true)
+	fart_sound.play()
 
 	print("Player %s is now infected!" % random_infected.name)
 
@@ -123,6 +125,9 @@ func _check_round_end() -> void:
 			total_count += 1
 			if player.is_infected:
 				infected_count += 1
+
+				if infected_count > 1:
+					fart_sound.play()
 
 	# Edge case: No players left
 	if total_count == 0:
@@ -226,7 +231,9 @@ func _set_player_infected(peer_id: int, infected: bool) -> void:
 	var player: Player = players_node.get_node_or_null(str(peer_id))
 	if player:
 		player.set_infected(infected)
-		fart_sound.play()
+
+	if hud:
+		hud.update_infection_display(peer_id, infected)
 
 
 # RPC: Update round state on all clients

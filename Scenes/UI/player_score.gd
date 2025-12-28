@@ -26,3 +26,14 @@ func set_player_sprite(character_id: Global.Characters) -> void:
 # Update the score display
 func update_score(new_score: int) -> void:
 	player_score.text = str(new_score)
+
+
+# Set infected visual state
+func set_infected_display(infected: bool) -> void:
+	if infected:
+		# Fart Green
+		player_name.modulate = Color(0.6, 0.8, 0.3)
+		player_score.modulate = Color(0.6, 0.8, 0.3)
+	else:
+		player_name.modulate = Color.WHITE
+		player_score.modulate = Color.WHITE

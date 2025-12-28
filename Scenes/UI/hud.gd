@@ -32,3 +32,10 @@ func update_score_display(peer_id: int, new_score: int) -> void:
 	var player_score_ui: PlayerScore = scores.get_node_or_null(str(peer_id))
 	if player_score_ui:
 		player_score_ui.update_score(new_score)
+
+
+# Update a specific player's infection display
+func update_infection_display(peer_id: int, infected: bool) -> void:
+	var player_score_ui: PlayerScore = scores.get_node_or_null(str(peer_id))
+	if player_score_ui:
+		player_score_ui.set_infected_display(infected)
