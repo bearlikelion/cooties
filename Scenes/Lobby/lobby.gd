@@ -19,7 +19,7 @@ func _ready() -> void:
 			upnp.discover()
 			lobby_id.text = "Lobby IP: %s" % upnp.query_external_address()
 		else:
-			lobby_id.text = "Connected to <todo>"
+			lobby_id.text = "Connected to: %s" % Global.ip_address
 
 	# Connect multiplayer signals
 	multiplayer.peer_connected.connect(_on_peer_connected)
@@ -33,7 +33,12 @@ func _ready() -> void:
 func _add_character_select(peer_id: int) -> void:
 	var character_select: CharacterSelect = CHARACTER_SELECT.instantiate()
 	character_select.name = "CharacterSelect_%d" % peer_id
-	character_select.player_name.text = Steam.getPersonaName()
+
+	if SteamInit.steam_running and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+		character_select.player_name.text = Steam.getPersonaName()
+	else:
+		character_select.player_name.text = str(peer_id)
+
 	character_select.set_multiplayer_authority(peer_id)
 	players.add_child(character_select, true)
 
@@ -72,6 +77,4 @@ func check_all_ready() -> void:
 # Starts the game on all clients
 @rpc("authority", "call_local", "reliable")
 func _start_game() -> void:
-	var main: Main = get_tree().get_first_node_in_group("main")
-	if main:
-		main.change_level("res://Scenes/Game/game.tscn")
+	Global.change_level("res://Scenes/Game/game.tscn")

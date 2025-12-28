@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://drqmqwoh706dl"]
+
+[ext_resource type="Script" uid="uid://ds0q8ob5wehgr" path="res://Scenes/Player/player.gd" id="1_a3d8c"]
+[ext_resource type="SpriteFrames" uid="uid://cfy6mnakd0y3w" path="res://Scenes/Player/CharacterSprites/pink_man.tres" id="2_a3d8c"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="3_xpcdj"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jlvik"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("AnimatedSprite2D:animation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath("PlayerName:text")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7g0yx"]
+radius = 12.0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite_2d", "player_name")]
+script = ExtResource("1_a3d8c")
+animated_sprite_2d = NodePath("AnimatedSprite2D")
+player_name = NodePath("PlayerName")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+delta_interval = 0.1
+replication_config = SubResource("SceneReplicationConfig_jlvik")
+visibility_update_mode = 1
+
+[node name="PlayerName" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -28.5
+offset_top = -19.0
+offset_right = 28.5
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_xpcdj")
+text = "NAME"
+horizontal_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_a3d8c")
+animation = &"wall_jump"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("CircleShape2D_7g0yx")
+
+[node name="WallCheckLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-20, 0)
+
+[node name="WallCheckRight" type="RayCast2D" parent="."]
+target_position = Vector2(20, 0)

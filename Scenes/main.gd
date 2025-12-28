@@ -4,10 +4,10 @@ extends Node
 @onready var level: Node = $Level
 
 func _ready() -> void:
-	add_to_group('main')
+	Global.change_level_to.connect(_on_change_level)
 
 
-func change_level(new_level_path: String) -> void:
+func _on_change_level(new_level_path: String) -> void:
 	for child_level: Node in level.get_children():
 		child_level.queue_free()
 

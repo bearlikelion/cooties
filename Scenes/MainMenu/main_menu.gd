@@ -70,9 +70,8 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		var set_relay: bool = Steam.allowP2PPacketRelay(true)
 		print("Allowing Steam to relay backup: %s" % set_relay)
 
-		var main: Main = get_tree().get_first_node_in_group('main')
-		if main:
-			main.change_level("res://Scenes/Lobby/lobby.tscn")
+		Global.add_local_player()
+		Global.change_level("res://Scenes/Lobby/lobby.tscn")
 
 
 func join_lobby(lobby_id: int) -> void:
@@ -116,9 +115,8 @@ func _on_host_game_pressed() -> void:
 				print("Server Error: %s" % error)
 			else:
 				multiplayer.multiplayer_peer = peer
-				var main: Main = get_tree().get_first_node_in_group('main')
-				if main:
-					main.change_level("res://Scenes/Lobby/lobby.tscn")
+				Global.add_local_player()
+				Global.change_level("res://Scenes/Lobby/lobby.tscn")
 		MultiplayerBackend.STEAM:
 			print("Hosting Steam Lobby")
 			Steam.createLobby(Steam.LobbyType.LOBBY_TYPE_PUBLIC, 4)
@@ -130,7 +128,6 @@ func _on_connect_pressed() -> void:
 	if error:
 		print("Client Error: %s" % error)
 	else:
+		Global.ip_address = ip_address.text
 		multiplayer.multiplayer_peer = peer
-		var main: Main = get_tree().get_first_node_in_group('main')
-		if main:
-			main.change_level("res://Scenes/Lobby/lobby.tscn")
+		Global.change_level("res://Scenes/Lobby/lobby.tscn")

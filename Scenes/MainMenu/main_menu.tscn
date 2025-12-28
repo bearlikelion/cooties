@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d1fgx57qdcfym" path="res://Scenes/MainMenu/main_menu.gd" id="1_0qgbs"]
 [ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_v763k"]
-[ext_resource type="Texture2D" uid="uid://cil4ppt0sij2g" path="res://Assets/Backgrounds/Green.png" id="2_qgdf6"]
+[ext_resource type="Texture2D" uid="uid://cil4ppt0sij2g" path="res://Assets/Images/Backgrounds/Green.png" id="2_qgdf6"]
 [ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="3_qgdf6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qgdf6"]

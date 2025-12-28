@@ -1,29 +1,16 @@
 class_name CharacterSelect
 extends PanelContainer
 
-enum Characters { VIRTUALGUY, PINKMAN, NINJAFROG, MASKDUDE }
-
 @export var player_name: Label
-
-@onready var character_sprite: TextureRect = %CharacterSprite
-@onready var character_option: OptionButton = %CharacterOption
-@onready var color_picker_button: ColorPickerButton = %ColorPickerButton
-@onready var ready_button: Button = %ReadyButton
 
 var is_ready: bool = false
 
+@onready var character_sprite: TextureRect = %CharacterSprite
+@onready var character_option: OptionButton = %CharacterOption
+@onready var ready_button: Button = %ReadyButton
+
 
 func _ready() -> void:
-	#var color_picker: ColorPicker = color_picker_button.get_picker()
-	#color_picker.can_add_swatches = false
-	#color_picker.color_modes_visible = false
-	#color_picker.edit_alpha = false
-	#color_picker.edit_intensity = false
-	#color_picker.hex_visible = false
-	#color_picker.presets_visible = false
-	#color_picker.sampler_visible = false
-	#color_picker.sliders_visible = false
-
 	if not is_multiplayer_authority():
 		character_option.disabled = true
 		ready_button.disabled = true
@@ -44,16 +31,20 @@ func _update_character_sprite(index: int) -> void:
 	var character_texture: Resource
 
 	match index:
-		Characters.VIRTUALGUY:
-			character_texture = load("res://Assets/Characters/Virtual Guy/Jump (32x32).png")
-		Characters.PINKMAN:
-			character_texture = load("res://Assets/Characters/Pink Man/Jump (32x32).png")
-		Characters.NINJAFROG:
-			character_texture = load("res://Assets/Characters/Ninja Frog/Jump (32x32).png")
-		Characters.MASKDUDE:
-			character_texture = load("res://Assets/Characters/Mask Dude/Jump (32x32).png")
+		Global.Characters.VIRTUALGUY:
+			character_texture = load("res://Assets/Images/Characters/Virtual Guy/Jump (32x32).png")
+		Global.Characters.PINKMAN:
+			character_texture = load("res://Assets/Images/Characters/Pink Man/Jump (32x32).png")
+		Global.Characters.NINJAFROG:
+			character_texture = load("res://Assets/Images/Characters/Ninja Frog/Jump (32x32).png")
+		Global.Characters.MASKDUDE:
+			character_texture = load("res://Assets/Images/Characters/Mask Dude/Jump (32x32).png")
 
 	character_sprite.texture = character_texture
+
+	# Update Global via RPC to sync across all clients
+	var peer_id: int = multiplayer.get_remote_sender_id()
+	Global.set_player_character.rpc(peer_id, index)
 
 
 # Called when ready button is toggled
