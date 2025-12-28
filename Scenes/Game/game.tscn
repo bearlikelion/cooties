@@ -264,6 +264,3 @@ position = Vector2(1048, 40)
 
 [node name="Marker2D4" type="Marker2D" parent="PlayerSpawner/SpawnPoints"]
 position = Vector2(104, 40)
-
-[node name="Marker2D5" type="Marker2D" parent="PlayerSpawner/SpawnPoints"]
-position = Vector2(576, 408)

@@ -3,7 +3,8 @@ extends MultiplayerSpawner
 
 const PLAYER_SCENE = preload("res://Scenes/Player/player.tscn")
 
-@onready var spawn_points: Array[Node] = $SpawnPoints.get_children()
+var spawn_points: Array[Node]
+
 @onready var players: Node = $Players
 
 
@@ -14,6 +15,7 @@ func _ready() -> void:
 
 	# Only the server should spawn players
 	if multiplayer.is_server():
+		spawn_points = get_node("SpawnPoints").get_children()
 		spawn_points.shuffle()
 
 		# Spawn all players (including server)

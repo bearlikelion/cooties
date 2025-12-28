@@ -11,15 +11,15 @@ var is_ready: bool = false
 
 
 func _ready() -> void:
+	Global.player_info_updated.connect(_on_player_info_updated)
+
 	if not is_multiplayer_authority():
 		# Disable character select for other players
 		character_option.disabled = true
 		ready_button.disabled = true
 
 		if Global.players[int(name)].character != 0:
-			character_option.select(Global.players[int(name)].character)
 			_update_character_sprite(Global.players[int(name)].character)
-
 	else:
 		character_option.item_selected.connect(_on_character_changed)
 		ready_button.toggled.connect(_on_ready_button_toggled)
@@ -79,3 +79,11 @@ func _set_ready(player_ready: bool) -> void:
 	var lobby: Lobby = get_tree().get_first_node_in_group("lobby")
 	if lobby:
 		lobby.check_all_ready()
+
+
+func _on_player_info_updated(peer_id: int) -> void:
+	if peer_id != int(name):
+		return
+
+	if Global.players[peer_id].character != character_option.selected:
+		character_option.select(Global.players[peer_id].character)
