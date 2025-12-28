@@ -15,6 +15,11 @@ func _ready() -> void:
 		# Disable character select for other players
 		character_option.disabled = true
 		ready_button.disabled = true
+
+		if Global.players[int(name)].character != 0:
+			character_option.select(Global.players[int(name)].character)
+			_update_character_sprite(Global.players[int(name)].character)
+
 	else:
 		character_option.item_selected.connect(_on_character_changed)
 		ready_button.toggled.connect(_on_ready_button_toggled)

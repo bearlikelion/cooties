@@ -34,7 +34,7 @@ func _ready() -> void:
 # Creates a character select UI for a specific peer
 func _add_character_select(peer_id: int) -> void:
 	var character_select: CharacterSelect = CHARACTER_SELECT.instantiate()
-	character_select.name = "CharacterSelect_%d" % peer_id
+	character_select.name = "%d" % peer_id
 
 	# Get player name from Global
 	character_select.player_name.text = Global.get_player_name(peer_id)
@@ -45,13 +45,13 @@ func _add_character_select(peer_id: int) -> void:
 
 # Called when a new peer connects
 func _on_player_info_updated(peer_id: int) -> void:
-	if players.get_node_or_null("CharacterSelect_%d" % peer_id) == null:
+	if players.get_node_or_null("%d" % peer_id) == null:
 		_add_character_select(peer_id)
 
 
 # Called when a peer disconnects
 func _on_peer_disconnected(peer_id: int) -> void:
-	var character_select: Node = players.get_node_or_null("CharacterSelect_%d" % peer_id)
+	var character_select: Node = players.get_node_or_null("%d" % peer_id)
 	if character_select:
 		character_select.queue_free()
 
@@ -121,5 +121,6 @@ func _on_disconnect_pressed() -> void:
 		Steam.leaveLobby(SteamInit.lobby_id)
 		SteamInit.peer = SteamMultiplayerPeer.new()
 
+	Global.players.clear()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	Global.change_level("res://Scenes/MainMenu/main_menu.tscn")
