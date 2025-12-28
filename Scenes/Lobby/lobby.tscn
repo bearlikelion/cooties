@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://vtb6nxwt773v"]
 
-[ext_resource type="Script" uid="uid://d1fgx57qdcfym" path="res://Scenes/MainMenu/main_menu.gd" id="1_8sp5w"]
+[ext_resource type="Script" uid="uid://dhvoojs07a5hx" path="res://Scenes/Lobby/lobby.gd" id="1_7mxwi"]
 [ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="2_xh0ps"]
 [ext_resource type="Texture2D" uid="uid://hk6shtcb5rq4" path="res://Assets/Backgrounds/Yellow.png" id="3_7mxwi"]
 [ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="4_tiinm"]
@@ -35,7 +35,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_8sp5w")
+script = ExtResource("1_7mxwi")
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_qgdf6")
@@ -70,17 +70,19 @@ theme = ExtResource("4_tiinm")
 text = "COOTIES"
 label_settings = SubResource("LabelSettings_dx3ka")
 
-[node name="PlayerCount" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+[node name="LobbyId" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("4_tiinm")
-text = "Players: 1"
+text = "Lobby ID: 0"
 label_settings = SubResource("LabelSettings_s46go")
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="Players" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6

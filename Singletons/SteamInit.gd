@@ -2,6 +2,7 @@ extends Node
 
 var steam_running: bool = true
 var lobby_id: int = 0
+var peer: SteamMultiplayerPeer = SteamMultiplayerPeer.new()
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS

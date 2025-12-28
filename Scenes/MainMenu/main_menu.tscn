@@ -96,6 +96,26 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 
+[node name="MPBackend" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GameButtons"]
+layout_mode = 2
+
+[node name="BackendLabel" type="Label" parent="MarginContainer/VBoxContainer/GameButtons/MPBackend"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_qgdf6")
+text = "Backend:"
+
+[node name="Backend" type="OptionButton" parent="MarginContainer/VBoxContainer/GameButtons/MPBackend"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+selected = 1
+item_count = 2
+popup/item_0/text = "ENET"
+popup/item_0/id = 0
+popup/item_1/text = "Steam"
+popup/item_1/id = 1
+
 [node name="HostGame" type="Button" parent="MarginContainer/VBoxContainer/GameButtons"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -114,35 +134,66 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+[node name="Enet" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="IPAddress" type="LineEdit" parent="MarginContainer/VBoxContainer/GameLobbies/Enet"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_qgdf6")
+placeholder_text = "Enter Ip Address to Connect To"
+
+[node name="Connect" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/Enet"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("3_qgdf6")
+text = "Connect"
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/Enet"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("3_qgdf6")
+text = "Back"
+
+[node name="Steam" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/GameLobbies/Steam"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_qgdf6")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/Steam/PanelContainer"]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/GameLobbies/Steam/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LobbyList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer/VBoxContainer/ScrollContainer"]
+[node name="LobbyList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/Steam/PanelContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/Steam"]
 layout_mode = 2
 
-[node name="Refresh" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer"]
+[node name="Refresh" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/Steam/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_qgdf6")
 text = "Refresh"
 
-[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer"]
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/Steam/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -151,5 +202,7 @@ text = "Back"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/HostGame" to="." method="_on_host_game_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/JoinGame" to="." method="_on_join_game_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer/Refresh" to="." method="_on_refresh_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Enet/Connect" to="." method="_on_connect_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Enet/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Steam/HBoxContainer/Refresh" to="." method="_on_refresh_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Steam/HBoxContainer/Back" to="." method="_on_back_pressed"]
