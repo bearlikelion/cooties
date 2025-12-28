@@ -232,7 +232,6 @@ sources/0 = SubResource("TileSetAtlasSource_i1e5p")
 
 [node name="Game" type="Node"]
 script = ExtResource("1_flgk0")
-max_rounds = 1
 
 [node name="HUD" parent="." instance=ExtResource("1_ciybh")]
 
