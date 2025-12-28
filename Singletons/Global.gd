@@ -2,6 +2,7 @@ extends Node
 
 signal change_level_to
 signal player_info_updated(peer_id: int)
+signal players_synced
 
 enum Characters { VIRTUALGUY, PINKMAN, NINJAFROG, MASKDUDE }
 
@@ -132,6 +133,10 @@ func add_local_player() -> void:
 	# Broadcast our name to all clients
 	set_player_name.rpc(local_id, player_name)
 
+	# Server doesn't need to wait for sync, emit immediately
+	if multiplayer.is_server():
+		players_synced.emit()
+
 
 # Client requests player data sync from server
 @rpc("any_peer", "call_remote", "reliable")
@@ -144,4 +149,6 @@ func _request_player_sync() -> void:
 # Server syncs all player data to a specific peer
 @rpc("authority", "call_remote", "reliable")
 func _sync_players_to_peer(player_data: Dictionary) -> void:
+	print("GLOBAL RECEIVED PLAYER SYNC: %s" % player_data)
 	players = player_data.duplicate(true)
+	players_synced.emit()

@@ -72,7 +72,6 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		print("Allowing Steam to relay backup: %s" % set_relay)
 
 		Global.add_local_player()
-		Global.change_level("res://Scenes/Lobby/lobby.tscn")
 
 
 func join_lobby(lobby_id: int) -> void:
@@ -82,11 +81,15 @@ func join_lobby(lobby_id: int) -> void:
 
 func _on_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, _response: int) -> void:
 	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
+		Global.change_level("res://Scenes/Lobby/lobby.tscn")
 		return
 
 	SteamInit.lobby_id = lobby_id
 	SteamInit.peer.connect_to_lobby(lobby_id)
 	multiplayer.multiplayer_peer = SteamInit.peer
+
+	# Wait for player data to sync from server
+	await Global.players_synced
 	Global.change_level("res://Scenes/Lobby/lobby.tscn")
 
 
@@ -141,4 +144,7 @@ func _on_connect_pressed() -> void:
 	else:
 		Global.ip_address = ip_address.text
 		multiplayer.multiplayer_peer = peer
+
+		# Wait for player data to sync from server
+		await Global.players_synced
 		Global.change_level("res://Scenes/Lobby/lobby.tscn")
