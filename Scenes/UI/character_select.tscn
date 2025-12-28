@@ -1,0 +1,69 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvob56tflntff"]
+
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="1_10ym7"]
+[ext_resource type="Texture2D" uid="uid://bo330h6byj45u" path="res://Assets/Characters/Virtual Guy/Jump (32x32).png" id="2_715fm"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_715fm"]
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_10ym7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlayerName" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Player name"
+horizontal_alignment = 1
+
+[node name="CharacterSprite" type="TextureRect" parent="PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+texture = ExtResource("2_715fm")
+stretch_mode = 5
+
+[node name="OptionButton" type="OptionButton" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 24
+selected = 0
+fit_to_longest_item = false
+item_count = 4
+popup/item_0/text = "Virtual Guy"
+popup/item_0/id = 0
+popup/item_1/text = "Pink Man"
+popup/item_1/id = 1
+popup/item_2/text = "Ninja Frog"
+popup/item_2/id = 2
+popup/item_3/text = "Mask Dude"
+popup/item_3/icon = SubResource("ViewportTexture_715fm")
+popup/item_3/id = 3
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+toggle_mode = true
+text = "Ready"

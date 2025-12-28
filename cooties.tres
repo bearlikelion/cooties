@@ -1,0 +1,79 @@
+[gd_resource type="Theme" load_steps=20 format=3 uid="uid://oxn4h4ypbx2q"]
+
+[ext_resource type="Texture2D" uid="uid://bh5j74peyd1ub" path="res://Assets/Images/UI/button_depth_border_disabled_uw_2x.png" id="1_1ietf"]
+[ext_resource type="Texture2D" uid="uid://k5gms4ml52nk" path="res://Assets/Images/UI/button_depth_uw_2x.png" id="1_2dhvj"]
+[ext_resource type="Texture2D" uid="uid://bgh0rvxcpcekg" path="res://Assets/Images/UI/button_depth_hover_uw_2x.png" id="1_4os40"]
+[ext_resource type="FontFile" uid="uid://ccn72g2wf3yn" path="res://Assets/Fonts/Starborn.ttf" id="1_wemxl"]
+[ext_resource type="Texture2D" uid="uid://dvlkdmqx3vrul" path="res://Assets/Images/UI/button_depth_pressed_uw_2x.png" id="3_1ietf"]
+[ext_resource type="Texture2D" uid="uid://d0pfgoau85cd7" path="res://Assets/Images/UI/button_depth_gloss_uw_2x.png" id="5_sotft"]
+[ext_resource type="Texture2D" uid="uid://b8j8wd1rmh5d0" path="res://Assets/Images/UI/scroll_bar_thick_grabber_uw_2x.png" id="6_2n4n8"]
+[ext_resource type="Texture2D" uid="uid://ppg8yuyb6low" path="res://Assets/Images/UI/scroll_bar_thick_grabber_highlight_uw_2x.png" id="7_6ckmw"]
+[ext_resource type="Texture2D" uid="uid://dcmnehd5nssqw" path="res://Assets/Images/UI/scroll_bar_thick_grabber_pressed_uw_2x.png" id="8_6ckmw"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1ietf"]
+texture = ExtResource("1_1ietf")
+texture_margin_left = 32.0
+texture_margin_top = 32.0
+texture_margin_right = 32.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ietf"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sotft"]
+texture = ExtResource("1_4os40")
+texture_margin_left = 32.0
+texture_margin_top = 32.0
+texture_margin_right = 32.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4os40"]
+texture = ExtResource("1_2dhvj")
+texture_margin_left = 32.0
+texture_margin_top = 32.0
+texture_margin_right = 32.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ooepa"]
+texture = ExtResource("3_1ietf")
+texture_margin_left = 32.0
+texture_margin_top = 32.0
+texture_margin_right = 32.0
+texture_margin_bottom = 32.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_sotft"]
+color = Color(0.60784316, 0.49411765, 0.8627451, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_waquy"]
+texture = ExtResource("5_sotft")
+texture_margin_left = 16.0
+texture_margin_top = 32.0
+texture_margin_right = 16.0
+texture_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yxchs"]
+texture = ExtResource("6_2n4n8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pxylw"]
+texture = ExtResource("7_6ckmw")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5swi2"]
+texture = ExtResource("8_6ckmw")
+
+[resource]
+default_font = ExtResource("1_wemxl")
+Button/colors/font_color = Color(0.59607846, 0.62352943, 0.8, 1)
+Button/colors/font_focus_color = Color(0.5681817, 0.3506383, 0.49380958, 1)
+Button/colors/font_hover_color = Color(0.8, 0.59607846, 0.7254902, 1)
+Button/colors/font_hover_pressed_color = Color(0.8, 0.59607846, 0.7254902, 1)
+Button/colors/font_pressed_color = Color(0.5686275, 0.34901962, 0.49411765, 1)
+Button/font_sizes/font_size = 24
+Button/styles/disabled = SubResource("StyleBoxTexture_1ietf")
+Button/styles/focus = SubResource("StyleBoxEmpty_1ietf")
+Button/styles/hover = SubResource("StyleBoxTexture_sotft")
+Button/styles/normal = SubResource("StyleBoxTexture_4os40")
+Button/styles/pressed = SubResource("StyleBoxTexture_ooepa")
+HSeparator/styles/separator = SubResource("StyleBoxLine_sotft")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_waquy")
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_yxchs")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_pxylw")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_5swi2")

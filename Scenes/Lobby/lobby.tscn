@@ -1,0 +1,86 @@
+[gd_scene load_steps=8 format=3 uid="uid://vtb6nxwt773v"]
+
+[ext_resource type="Script" uid="uid://d1fgx57qdcfym" path="res://Scenes/MainMenu/main_menu.gd" id="1_8sp5w"]
+[ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="2_xh0ps"]
+[ext_resource type="Texture2D" uid="uid://hk6shtcb5rq4" path="res://Assets/Backgrounds/Yellow.png" id="3_7mxwi"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="4_tiinm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgdf6"]
+shader = ExtResource("2_xh0ps")
+shader_parameter/scroll_speed = 0.0400000019
+shader_parameter/angle_degrees = 0.0
+shader_parameter/repeat_x = 20.0
+shader_parameter/repeat_y = 12.0
+shader_parameter/row_offset = 1.0
+shader_parameter/texture_to_scroll = ExtResource("3_7mxwi")
+
+[sub_resource type="LabelSettings" id="LabelSettings_dx3ka"]
+font_size = 64
+font_color = Color(0.67058825, 0.59607846, 0.8, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_s46go"]
+font_size = 32
+font_color = Color(0.67058825, 0.59607846, 0.8, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8sp5w")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_qgdf6")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+theme = ExtResource("4_tiinm")
+text = "COOTIES"
+label_settings = SubResource("LabelSettings_dx3ka")
+
+[node name="PlayerCount" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("4_tiinm")
+text = "Players: 1"
+label_settings = SubResource("LabelSettings_s46go")
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Players" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6

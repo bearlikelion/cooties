@@ -1,0 +1,155 @@
+[gd_scene load_steps=9 format=3 uid="uid://cdyh1ranvhbj"]
+
+[ext_resource type="Script" uid="uid://d1fgx57qdcfym" path="res://Scenes/MainMenu/main_menu.gd" id="1_0qgbs"]
+[ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_v763k"]
+[ext_resource type="Texture2D" uid="uid://cil4ppt0sij2g" path="res://Assets/Backgrounds/Green.png" id="2_qgdf6"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="3_qgdf6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgdf6"]
+shader = ExtResource("1_v763k")
+shader_parameter/scroll_speed = 0.0400000019
+shader_parameter/angle_degrees = 120.0000057
+shader_parameter/repeat_x = 20.0
+shader_parameter/repeat_y = 12.0
+shader_parameter/row_offset = 1.0
+shader_parameter/texture_to_scroll = ExtResource("2_qgdf6")
+
+[sub_resource type="LabelSettings" id="LabelSettings_0qgbs"]
+font_size = 120
+font_color = Color(0.67058825, 0.59607846, 0.8, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_adu2g"]
+font_size = 32
+font_color = Color(0.8, 0.59607846, 0.7254902, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qgdf6"]
+font_size = 24
+font_color = Color(0.96589893, 0, 0.31451052, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0qgbs")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_qgdf6")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "COOTIES"
+label_settings = SubResource("LabelSettings_0qgbs")
+horizontal_alignment = 1
+
+[node name="Tagline" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "Godot Multiplayer Tutorial"
+label_settings = SubResource("LabelSettings_adu2g")
+horizontal_alignment = 1
+
+[node name="SteamWarning" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "STEAM MUST TO BE RUNNING TO PLAY"
+label_settings = SubResource("LabelSettings_qgdf6")
+horizontal_alignment = 1
+
+[node name="GameButtons" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+
+[node name="HostGame" type="Button" parent="MarginContainer/VBoxContainer/GameButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "Host Game"
+
+[node name="JoinGame" type="Button" parent="MarginContainer/VBoxContainer/GameButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "Join Game"
+
+[node name="GameLobbies" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("3_qgdf6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LobbyList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies/PanelContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GameLobbies"]
+layout_mode = 2
+
+[node name="Refresh" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_qgdf6")
+text = "Refresh"
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("3_qgdf6")
+text = "Back"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/HostGame" to="." method="_on_host_game_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/JoinGame" to="." method="_on_join_game_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer/Refresh" to="." method="_on_refresh_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/HBoxContainer/Back" to="." method="_on_back_pressed"]
