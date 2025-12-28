@@ -31,6 +31,7 @@ var is_infected: bool = false
 @onready var wall_check_left: RayCast2D = $WallCheckLeft
 @onready var wall_check_right: RayCast2D = $WallCheckRight
 @onready var infection_area: Area2D = $InfectionArea
+@onready var fart_sound: AudioStreamPlayer = $FartSound
 
 
 func _ready() -> void:
@@ -195,4 +196,5 @@ func set_infected(infected_state: bool) -> void:
 	is_infected = infected_state
 
 	if infected:
+		fart_sound.play()
 		infected.emitting = infected_state

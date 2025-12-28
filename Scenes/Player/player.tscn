@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://drqmqwoh706dl"]
+[gd_scene load_steps=11 format=3 uid="uid://drqmqwoh706dl"]
 
 [ext_resource type="Script" uid="uid://ds0q8ob5wehgr" path="res://Scenes/Player/player.gd" id="1_a3d8c"]
 [ext_resource type="SpriteFrames" uid="uid://cfy6mnakd0y3w" path="res://Scenes/Player/CharacterSprites/pink_man.tres" id="2_a3d8c"]
 [ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="3_xpcdj"]
+[ext_resource type="AudioStream" uid="uid://d0aeo3xo6gx6e" path="res://Assets/Audio/SFX/249583__ycbcr__short-definite-fart.ogg" id="4_mtuoh"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jlvik"]
 properties/0/path = NodePath(".:position")
@@ -94,3 +95,7 @@ target_position = Vector2(-15, 0)
 
 [node name="WallCheckRight" type="RayCast2D" parent="."]
 target_position = Vector2(15, 0)
+
+[node name="FartSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_mtuoh")
+volume_db = -15.0

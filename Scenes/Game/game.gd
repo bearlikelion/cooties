@@ -94,7 +94,6 @@ func _on_round_delay_complete() -> void:
 	# Select random player to be infected
 	var random_infected: Player = all_players.pick_random()
 	_set_player_infected.rpc(int(random_infected.name), true)
-	fart_sound.play()
 
 	print("Player %s is now infected!" % random_infected.name)
 
@@ -125,9 +124,6 @@ func _check_round_end() -> void:
 			total_count += 1
 			if player.is_infected:
 				infected_count += 1
-
-				if infected_count > 1:
-					fart_sound.play()
 
 	# Edge case: No players left
 	if total_count == 0:
