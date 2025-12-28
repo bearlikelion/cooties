@@ -65,7 +65,7 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 		Steam.setLobbyJoinable(lobby_id, true)
 		Steam.setLobbyData(lobby_id, "name", Steam.getPersonaName() + "'s lobby")
-		Steam.setLobbyData(lobby_id, "game", "GodotCootiesTutorial")
+		Steam.setLobbyData(lobby_id, "game", "GodotCootiesMPTutorial")
 
 		var set_relay: bool = Steam.allowP2PPacketRelay(true)
 		print("Allowing Steam to relay backup: %s" % set_relay)
@@ -83,6 +83,7 @@ func join_lobby(lobby_id: int) -> void:
 func get_lobbies() -> void:
 	print("Requesting lobby list")
 	Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_WORLDWIDE) # Get ALL lobbies
+	Steam.addRequestLobbyListStringFilter("game", "GodotCootiesMPTutorial", Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL)
 	Steam.requestLobbyList()
 
 

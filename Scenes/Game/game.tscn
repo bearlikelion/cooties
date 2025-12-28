@@ -1,3 +1,26 @@
-[gd_scene format=3 uid="uid://djdrs1ttx56ws"]
+[gd_scene load_steps=4 format=3 uid="uid://djdrs1ttx56ws"]
 
-[node name="Game" type="Node2D"]
+[ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_qxfds"]
+[ext_resource type="Texture2D" uid="uid://j0hk7wu6dy6v" path="res://Assets/Backgrounds/Brown.png" id="2_qikps"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i1e5p"]
+shader = ExtResource("1_qxfds")
+shader_parameter/scroll_speed = 0.08
+shader_parameter/angle_degrees = 270.000012825
+shader_parameter/repeat_x = 20.0
+shader_parameter/repeat_y = 12.0
+shader_parameter/row_offset = 1.0
+shader_parameter/texture_to_scroll = ExtResource("2_qikps")
+
+[node name="Game" type="Node"]
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_i1e5p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0

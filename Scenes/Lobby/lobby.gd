@@ -31,11 +31,11 @@ func _ready() -> void:
 
 # Creates a character select UI for a specific peer
 func _add_character_select(peer_id: int) -> void:
-	var character_select: PanelContainer = CHARACTER_SELECT.instantiate()
+	var character_select: CharacterSelect = CHARACTER_SELECT.instantiate()
 	character_select.name = "CharacterSelect_%d" % peer_id
 	character_select.player_name.text = Steam.getPersonaName()
 	character_select.set_multiplayer_authority(peer_id)
-	players.add_child(character_select)
+	players.add_child(character_select, true)
 
 
 # Called when a new peer connects

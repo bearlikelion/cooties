@@ -1,10 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvob56tflntff"]
+[gd_scene load_steps=4 format=3 uid="uid://dvob56tflntff"]
 
 [ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="1_10ym7"]
 [ext_resource type="Texture2D" uid="uid://bo330h6byj45u" path="res://Assets/Characters/Virtual Guy/Jump (32x32).png" id="2_715fm"]
 [ext_resource type="Script" uid="uid://dqrhdfiu1yee5" path="res://Scenes/UI/character_select.gd" id="2_d3lco"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_715fm"]
 
 [node name="CharacterSelect" type="PanelContainer" node_paths=PackedStringArray("player_name")]
 anchors_preset = 8
@@ -58,7 +56,6 @@ popup/item_1/id = 1
 popup/item_2/text = "Ninja Frog"
 popup/item_2/id = 2
 popup/item_3/text = "Mask Dude"
-popup/item_3/icon = SubResource("ViewportTexture_715fm")
 popup/item_3/id = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
