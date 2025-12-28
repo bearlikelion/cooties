@@ -3,10 +3,10 @@ extends Control
 
 const CHARACTER_SELECT = preload("res://Scenes/UI/character_select.tscn")
 
+var upnp_thread: Thread
+
 @onready var lobby_id: Label = %LobbyId
 @onready var players: HBoxContainer = %Players
-
-var upnp_thread: Thread
 
 
 func _ready() -> void:
@@ -14,8 +14,7 @@ func _ready() -> void:
 
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer and SteamInit.lobby_id > 0:
 		lobby_id.text = "Lobby ID: %s" % SteamInit.lobby_id
-
-	if multiplayer.multiplayer_peer is ENetMultiplayerPeer:
+	elif multiplayer.multiplayer_peer is ENetMultiplayerPeer:
 		if multiplayer.is_server():
 			lobby_id.text = "Discovering external IP..."
 			upnp_thread = Thread.new()
