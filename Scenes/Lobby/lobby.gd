@@ -113,9 +113,9 @@ func _update_lobby_ip_fallback() -> void:
 		lobby_id.text = "IP: Unknown"
 
 
+# Clean up thread if it exists
 func _exit_tree() -> void:
-	# Clean up thread if it exists
-	if upnp_thread and upnp_thread.is_alive():
+	if upnp_thread and upnp_thread.is_started():
 		upnp_thread.wait_to_finish()
 
 

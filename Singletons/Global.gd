@@ -72,6 +72,8 @@ func _on_server_disconnected() -> void:
 # Set player character selection via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_character(peer_id: int, character_index: int) -> void:
+	# HACK: This is a hacky bugfix for an issue when returning to lobbby after a game ends
+	# The character_select.gd runs set_player_character too early sending as peer_id 0
 	if peer_id > 0:
 		if not players.has(peer_id):
 			players[peer_id] = {"character": character_index, "name": str(peer_id), "score": 0}
@@ -94,7 +96,7 @@ func set_player_name(peer_id: int, player_name: String) -> void:
 		var sender_id: int = multiplayer.get_remote_sender_id()
 		var local_id: int = multiplayer.get_unique_id()
 		# Only sync to remote clients, never to ourselves
-		if sender_id > 0 and sender_id != local_id and sender_id == peer_id:
+		if sender_id != local_id and sender_id == peer_id:
 			_sync_players_to_peer.rpc_id(sender_id, players)
 
 	player_info_updated.emit(peer_id)
@@ -104,7 +106,7 @@ func set_player_name(peer_id: int, player_name: String) -> void:
 func get_player_character(peer_id: int) -> int:
 	if players.has(peer_id):
 		return players[peer_id]["character"]
-	return 0
+	return -1
 
 
 # Get player name
@@ -137,21 +139,10 @@ func clear_players() -> void:
 	players.clear()
 
 
-# Reset all player scores to 0 and clean up invalid peer_ids
+# Reset all player scores to 0
 func reset_scores() -> void:
-	var invalid_peers: Array[int] = []
-
-	# Find invalid peer_ids
 	for peer_id: int in players.keys():
-		if peer_id <= 0:
-			invalid_peers.append(peer_id)
-		else:
-			players[peer_id]["score"] = 0
-
-	# Remove invalid peer_ids
-	for peer_id: int in invalid_peers:
-		push_error("Removing invalid peer_id %d from Global.players" % peer_id)
-		players.erase(peer_id)
+		players[peer_id]["score"] = 0
 
 
 # Add local player to the players dictionary (call this after creating server/client)

@@ -244,6 +244,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
+physics_interpolation_mode = 2
 anchor_mode = 0
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
