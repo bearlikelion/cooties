@@ -26,8 +26,9 @@ func _ready() -> void:
 	Global.player_info_updated.connect(_on_player_info_updated)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
-	# Create character select for you
-	_add_character_select(multiplayer.get_unique_id())
+	# Create character select for peers
+	for peer: int in Global.players.keys():
+		_add_character_select(peer)
 
 
 # Creates a character select UI for a specific peer
@@ -44,7 +45,8 @@ func _add_character_select(peer_id: int) -> void:
 
 # Called when a new peer connects
 func _on_player_info_updated(peer_id: int) -> void:
-	_add_character_select(peer_id)
+	if players.get_node_or_null("CharacterSelect_%d" % peer_id) == null:
+		_add_character_select(peer_id)
 
 
 # Called when a peer disconnects
@@ -117,6 +119,7 @@ func _exit_tree() -> void:
 func _on_disconnect_pressed() -> void:
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		Steam.leaveLobby(SteamInit.lobby_id)
+		SteamInit.peer = SteamMultiplayerPeer.new()
 
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	Global.change_level("res://Scenes/MainMenu/main_menu.tscn")
