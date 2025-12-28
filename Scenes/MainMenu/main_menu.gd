@@ -53,6 +53,7 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 		var lobby_button: Button = Button.new()
 		lobby_button.text = "%s - %d players" % [lobby_name, lobby_players]
 		lobby_button.name = "lobby_" + str(lobby_id)
+		lobby_button.add_to_group("lobby_button")
 		lobby_button.pressed.connect(join_lobby.bind(lobby_id))
 		lobby_list.add_child(lobby_button)
 
@@ -76,6 +77,10 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 func join_lobby(lobby_id: int) -> void:
 	print("Attempting to join lobby %s" % lobby_id)
+
+	for lobby_button: Button in get_tree().get_nodes_in_group("lobby_button"):
+		lobby_button.disabled = true
+
 	Steam.joinLobby(lobby_id)
 
 

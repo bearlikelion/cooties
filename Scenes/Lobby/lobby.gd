@@ -23,7 +23,7 @@ func _ready() -> void:
 			lobby_id.text = "Connected to: %s" % Global.ip_address
 
 	# Connect multiplayer signals
-	multiplayer.peer_connected.connect(_on_peer_connected)
+	Global.player_info_updated.connect(_on_player_info_updated)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 	# Create character select for you
@@ -43,7 +43,7 @@ func _add_character_select(peer_id: int) -> void:
 
 
 # Called when a new peer connects
-func _on_peer_connected(peer_id: int) -> void:
+func _on_player_info_updated(peer_id: int) -> void:
 	_add_character_select(peer_id)
 
 

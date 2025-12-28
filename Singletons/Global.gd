@@ -86,13 +86,15 @@ func set_player_name(peer_id: int, player_name: String) -> void:
 	else:
 		players[peer_id]["name"] = player_name
 
-	player_info_updated.emit(peer_id)
-
 	# If we're the server and received a name from a client, sync back to them
 	if multiplayer.is_server():
 		var sender_id: int = multiplayer.get_remote_sender_id()
-		if sender_id != 0 and sender_id == peer_id:
+		var local_id: int = multiplayer.get_unique_id()
+		# Only sync to remote clients, never to ourselves
+		if sender_id > 0 and sender_id != local_id and sender_id == peer_id:
 			_sync_players_to_peer.rpc_id(sender_id, players)
+
+	player_info_updated.emit(peer_id)
 
 
 # Get player character index
