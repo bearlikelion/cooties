@@ -17,6 +17,8 @@ func _ready() -> void:
 
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer and SteamInit.lobby_id > 0:
 		lobby_id.text = "Lobby ID: %s" % SteamInit.lobby_id
+		if multiplayer.is_server():
+			Steam.setLobbyJoinable(SteamInit.lobby_id, true)
 	elif multiplayer.multiplayer_peer is ENetMultiplayerPeer:
 		if multiplayer.is_server():
 			lobby_id.text = "Discovering external IP..."

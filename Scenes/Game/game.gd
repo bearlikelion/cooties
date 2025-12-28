@@ -28,6 +28,8 @@ func _ready() -> void:
 	if not multiplayer.is_server():
 		return
 
+	Steam.setLobbyJoinable(SteamInit.lobby_id, false)
+
 	_setup_timers()
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
