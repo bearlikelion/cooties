@@ -24,6 +24,7 @@ func _ready() -> void:
 		steam_warning.hide()
 		Steam.lobby_match_list.connect(_on_lobby_match_list)
 		Steam.lobby_created.connect(_on_lobby_created)
+		Steam.lobby_joined.connect(_on_lobby_joined)
 
 
 func _on_join_game_pressed() -> void:
@@ -77,6 +78,16 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 func join_lobby(lobby_id: int) -> void:
 	print("Attempting to join lobby %s" % lobby_id)
 	Steam.joinLobby(lobby_id)
+
+
+func _on_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, _response: int) -> void:
+	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
+		return
+
+	SteamInit.lobby_id = lobby_id
+	SteamInit.peer.connect_to_lobby(lobby_id)
+	multiplayer.multiplayer_peer = SteamInit.peer
+	Global.change_level("res://Scenes/Lobby/lobby.tscn")
 
 
 func get_lobbies() -> void:

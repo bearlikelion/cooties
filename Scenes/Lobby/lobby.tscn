@@ -86,3 +86,10 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
+
+[node name="Disconnect" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_tiinm")
+text = "Disconnect"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Disconnect" to="." method="_on_disconnect_pressed"]

@@ -31,13 +31,13 @@ var was_on_floor: bool = false
 
 
 func _ready() -> void:
+	# Set player name from Global
+	var peer_id: int = int(name)
+	if player_name:
+		player_name.text = Global.get_player_name(peer_id)
+
 	if not is_multiplayer_authority():
-		physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON # Interpolate physics for other players
-	else:
-		if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
-			player_name.text = Steam.getPersonaName()
-		else:
-			player_name.text = str(multiplayer.get_unique_id())
+		physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 
 
 func _physics_process(delta: float) -> void:
