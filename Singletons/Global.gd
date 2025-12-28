@@ -100,7 +100,7 @@ func _on_server_disconnected() -> void:
 func set_player_character(peer_id: int, character_index: int) -> void:
 	# HACK: This is a hacky bugfix for an issue when returning to lobbby after a game ends
 	# The character_select.gd runs set_player_character too early sending as peer_id 0
-	if peer_id > 0:
+	if peer_id > 0 and players.has(peer_id):
 		players[peer_id]["character"] = character_index
 		player_info_updated.emit(peer_id)
 
