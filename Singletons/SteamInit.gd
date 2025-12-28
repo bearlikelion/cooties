@@ -12,7 +12,9 @@ func _ready() -> void:
 
 	if init_steam['status'] > Steam.STEAM_API_INIT_RESULT_OK:
 		steam_running = false
+	else:
 		steam_name = Steam.getPersonaName()
+
 
 
 func _process(_delta: float) -> void:
