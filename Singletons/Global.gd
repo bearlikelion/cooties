@@ -34,10 +34,6 @@ func _on_peer_connected(peer_id: int) -> void:
 			"name": str(peer_id)
 		}
 
-	# If we're the server, sync all player data to the newly connected peer
-	if multiplayer.is_server():
-		_sync_players_to_peer.rpc_id(peer_id, players)
-
 
 # Called when a peer disconnects
 func _on_peer_disconnected(peer_id: int) -> void:
@@ -58,14 +54,12 @@ func _on_connected_to_server() -> void:
 		}
 
 	# Send our player name to the server
+	# The server will sync back to us after receiving our name
 	var player_name: String = str(local_id)
 	if SteamInit.steam_running and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		player_name = Steam.getPersonaName()
 
 	set_player_name.rpc_id(1, local_id, player_name)
-
-	# Request player data sync from server
-	_request_player_sync.rpc_id(1)
 
 
 # Called when server disconnects
@@ -93,6 +87,12 @@ func set_player_name(peer_id: int, player_name: String) -> void:
 		players[peer_id]["name"] = player_name
 
 	player_info_updated.emit(peer_id)
+
+	# If we're the server and received a name from a client, sync back to them
+	if multiplayer.is_server():
+		var sender_id: int = multiplayer.get_remote_sender_id()
+		if sender_id != 0 and sender_id == peer_id:
+			_sync_players_to_peer.rpc_id(sender_id, players)
 
 
 # Get player character index
@@ -136,14 +136,6 @@ func add_local_player() -> void:
 	# Server doesn't need to wait for sync, emit immediately
 	if multiplayer.is_server():
 		players_synced.emit()
-
-
-# Client requests player data sync from server
-@rpc("any_peer", "call_remote", "reliable")
-func _request_player_sync() -> void:
-	if multiplayer.is_server():
-		var sender_id: int = multiplayer.get_remote_sender_id()
-		_sync_players_to_peer.rpc_id(sender_id, players)
 
 
 # Server syncs all player data to a specific peer
