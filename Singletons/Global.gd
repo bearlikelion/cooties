@@ -29,18 +29,19 @@ func change_level(scene_path: String) -> void:
 func _on_peer_connected(peer_id: int) -> void:
 	print("GLOBAL PEER CONNECTED: %d" % peer_id)
 	if not players.has(peer_id):
-		var player_name: String = str(peer_id)
-		if peer_id == multiplayer.get_unique_id()\
-		and multiplayer.multiplayer_peer is SteamMultiplayerPeer:
-			player_name = Steam.getPersonaName()
+		get_player_from_server.rpc_id(1, peer_id)
 
-		players[peer_id] = {
-			"character": -1,
-			"name": player_name,
-			"score": 0
-		}
 
-		set_player_name.rpc(peer_id, player_name)
+@rpc("any_peer", "call_remote", "reliable")
+func get_player_from_server(peer_id: int) -> void:
+	if multiplayer.is_server():
+		if Global.players.has(peer_id):
+			send_player_to_peer.rpc_id(multiplayer.get_remote_sender_id(), peer_id, Global.players[peer_id])
+
+
+@rpc("authority", "call_remote", "reliable")
+func send_player_to_peer(peer_id: int, player_data: Dictionary) -> void:
+	Global.players[peer_id] = player_data
 
 
 # Called when a peer disconnects
@@ -62,14 +63,13 @@ func _on_connected_to_server() -> void:
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		player_name = SteamInit.steam_name
 
-	if not players.has(local_id):
-		players[local_id] = {
-			"character": -1,
-			"name": player_name,
-			"score": 0
-		}
+	var player_data: Dictionary = {
+		"character": -1,
+		"name": player_name,
+		"score": 0
+	}
 
-	send_player_to_server.rpc_id(1, players[local_id])
+	send_player_to_server.rpc_id(1, player_data)
 
 
 @rpc("any_peer", "call_remote", "reliable")
