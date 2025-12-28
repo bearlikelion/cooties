@@ -35,6 +35,9 @@ func _on_peer_connected(peer_id: int) -> void:
 			"score": 0
 		}
 
+		if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+			get_player_from_server.rpc(peer_id)
+
 
 @rpc("any_peer", "call_remote", "reliable")
 func get_player_from_server(peer_id: int) -> void:
@@ -46,6 +49,7 @@ func get_player_from_server(peer_id: int) -> void:
 @rpc("authority", "call_remote", "reliable")
 func send_player_to_peer(peer_id: int, player_data: Dictionary) -> void:
 	Global.players[peer_id] = player_data
+	player_info_updated.emit(peer_id)
 
 
 # Called when a peer disconnects

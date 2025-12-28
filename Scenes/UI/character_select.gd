@@ -90,5 +90,8 @@ func _on_player_info_updated(peer_id: int) -> void:
 	if peer_id != int(name):
 		return
 
+	if Global.players[peer_id].name != player_name.text:
+		player_name.text = Global.players[peer_id].name
+
 	if Global.players[peer_id].character != character_option.selected:
 		character_option.select(Global.players[peer_id].character)
