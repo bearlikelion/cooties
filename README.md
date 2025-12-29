@@ -1,22 +1,17 @@
 # Cooties
 
+### **Checkout the game's [Itch.io page](https://bearlikelion.itch.io/cooties)** for downloads & releases.
+
 P2P multiplayer tutorial for Godot using [Steam Networking Sockets](https://partner.steamgames.com/doc/api/ISteamnetworkingSockets) and traditional IP/Port connections through [ENet](https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html). This project utilizes RPC Calls, MultiplayerSpawner, and MultiplayerSynchronizer nodes with physics interpolation for other peers.
 
 This repository is an open source [MIT licensed](LICENSE.md) tutorial to serve as an introduction for multiplayer in Godot.
 
-**Checkout the game's [Itch.io page](https://bearlikelion.itch.io/cooties)** for downloads & releases.
+### Gameplay Clips: https://www.youtube.com/watch?v=SyD0FYQca8s
 
 ## Overview
 
 Cooties is a fast-paced infection/tag multiplayer platformer game where players compete to avoid catching cooties. One random player starts infected each round and must tag other players to spread the sickness. Non-infected players earn points for every second they are not sick. The player with the highest score after 5 rounds wins!
 
-## Controls
-
-- **Move Left**: A / Left Arrow
-- **Move Right**: D / Right Arrow
-- **Jump**: W / Space / Up Arrow
-- **Double Jump**: Press jump again while airborne
-- **Wall Jump**: Jump while sliding on a wall
 
 ## Features
 
