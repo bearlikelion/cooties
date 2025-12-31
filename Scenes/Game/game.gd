@@ -8,6 +8,9 @@ enum GameState { WAITING, PLAYING, ROUND_END, GAME_OVER }
 @export var scoreboard_delay: float = 4.0
 @export var score_tick_rate: float = 1.0
 
+# how dampened the score scaling is against starter infection chance (low = strong, high = weak)
+@export var infection_score_damping: float = 20
+
 var current_state: GameState = GameState.WAITING
 var current_round: int = 0
 
@@ -86,21 +89,67 @@ func _start_round() -> void:
 # Called when round delay completes
 func _on_round_delay_complete() -> void:
 	var all_players: Array[Node] = players_node.get_children()
-
 	if all_players.is_empty():
 		print("No players available, ending game")
 		_end_game()
 		return
-
+	
 	# Select random player to be infected
-	var random_infected: Player = all_players.pick_random()
-	_set_player_infected.rpc(int(random_infected.name), true)
+	var random_infected_peer_id: int = _determine_next_infected_player(all_players)
+	_set_player_infected.rpc(random_infected_peer_id, true)
 
-	print("Player %s is now infected!" % random_infected.name)
+	print("Player %s is now infected!" % random_infected_peer_id)
 
 	# Start active gameplay
 	_update_round_state.rpc(current_round, GameState.PLAYING)
 	score_tick_timer.start()
+
+
+
+# returns the peer_id of the next infected player weighted exponentially (with damping term infection_score_damping)
+func _determine_next_infected_player(all_players: Array[Node]) -> int:
+	# use the Softmax staistical function to create probabilities based on the score. 
+	# Eq. 1: P = e^Z / sum(e^Zj)) 
+	# Where: 
+	# 	 P = the player probability of infection
+	# 	 Z = the player score
+	# 	Zj = the j'th player score
+	
+	# gather all the scores.
+	var scores: Array[int] = []
+	for player: Node in all_players:
+		scores.append(Global.get_player_score(int(player.name)))
+	var max_score: int = scores.max()
+	
+	# calculate the shifted exponetial values for use in Eq. 1
+	# essentially, exponentials are 'shift-invariant' so shifting scores keeps everything to scale while preventing float.inf
+	# See https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/ for more information
+	var exp_sum: float = 0
+	var exp_scores: Array[float] = []
+	for score: int in scores:
+		var exp_score: float = exp((score - max_score) / infection_score_damping)
+		exp_sum += exp_score
+		exp_scores.append(exp_score)
+	
+	# now actually calculate the probabilities
+	var probabilities: Array[float] = []
+	for exp_score: float in exp_scores:
+		probabilities.append(exp_score / exp_sum)
+	
+	print("Infection probabilities: %s\nPlayer scores: %s" % [probabilities, scores])
+	
+	var random_number: float = randf()
+	
+	# now determine the player infected via cumulative distribution
+	var infected_peer_id: int = 0
+	var cumulative_prob: float = 0
+	for i: int in all_players.size():
+		cumulative_prob += probabilities[i]
+		if random_number < cumulative_prob:
+			infected_peer_id = int(all_players[i].name)
+			break
+	
+	return infected_peer_id
 
 
 # Award points every second to non-infected players
