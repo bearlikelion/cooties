@@ -12,7 +12,6 @@ This repository is an open source [MIT licensed](LICENSE.md) tutorial to serve a
 
 Cooties is a fast-paced infection/tag multiplayer platformer game where players compete to avoid catching cooties. One random player starts infected each round and must tag other players to spread the sickness. Non-infected players earn points for every second they are not sick. The player with the highest score after 5 rounds wins!
 
-
 ## Features
 
 ### Gameplay
@@ -39,12 +38,12 @@ Cooties is a fast-paced infection/tag multiplayer platformer game where players 
 - Host/join lobby system
 - Graceful disconnection handling
 
-
 ## Technical Details
 
 ### Engine
 - [Godot 4.5](https://godotengine.org/download/archive/4.5.1-stable/)
 - [GodotSteam 4.17](https://godotsteam.com/getting_started/what_are_you_making/)
+- [Rapier2D Physics with Cross Platform Deterministic](https://godot.rapier.rs/)
 - Steamworks v1.63
 - Staticly typed GDScript
 - (Decently) commented code
