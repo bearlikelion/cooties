@@ -61,6 +61,7 @@ jump={
 
 [physics]
 
+2d/physics_engine="Rapier2D"
 common/physics_interpolation=true
 
 [rendering]
