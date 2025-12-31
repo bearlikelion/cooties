@@ -108,11 +108,12 @@ func _on_round_delay_complete() -> void:
 
 # returns the peer_id of the next infected player weighted exponentially (with damping term infection_score_damping)
 func _determine_next_infected_player(all_players: Array[Node]) -> int:
-	#use the Softmax staistical function to create probabilities based on the score. 
-	# Eq. 1: Pi = e^Zi / sum(e^Zj)) 
+	# use the Softmax staistical function to create probabilities based on the score. 
+	# Eq. 1: P = e^Z / sum(e^Zj)) 
 	# Where: 
-	# 	 Pi = the i'th players probability of infection
-	# Zi,Zj = the i'th and j'th player scores.
+	# 	 P = the player probability of infection
+	# 	 Z = the player score
+	# 	Zj = the j'th player score
 	
 	# gather all the scores.
 	var scores: Array[int] = []
@@ -121,7 +122,7 @@ func _determine_next_infected_player(all_players: Array[Node]) -> int:
 	var max_score: int = scores.max()
 	
 	# calculate the shifted exponetial values for use in Eq. 1
-	# essentially, exponentials are 'shift-invariant' so shifting scores limits the size of numbers while preventing float.inf
+	# essentially, exponentials are 'shift-invariant' so shifting scores keeps everything to scale while preventing float.inf
 	# See https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/ for more information
 	var exp_sum: float = 0
 	var exp_scores: Array[float] = []
@@ -149,7 +150,6 @@ func _determine_next_infected_player(all_players: Array[Node]) -> int:
 			break
 	
 	return infected_peer_id
-	
 
 
 # Award points every second to non-infected players
