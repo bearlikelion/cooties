@@ -8,6 +8,11 @@ enum GameState { WAITING, PLAYING, ROUND_END, GAME_OVER }
 @export var scoreboard_delay: float = 4.0
 @export var score_tick_rate: float = 1.0
 
+# used to control at what rate starter infection probability scales with current score
+# 	Low values correspond to high sensitivity to score in the probability distribution for infection selection, 
+# 	High values correspond to low sensitivity (damping) to score in the probability distribution
+@export var infection_score_damping: float = 20
+
 var current_state: GameState = GameState.WAITING
 var current_round: int = 0
 
@@ -91,16 +96,80 @@ func _on_round_delay_complete() -> void:
 		print("No players available, ending game")
 		_end_game()
 		return
-
+	
 	# Select random player to be infected
-	var random_infected: Player = all_players.pick_random()
-	_set_player_infected.rpc(int(random_infected.name), true)
+	var random_infected_peer_id: int = _determine_next_infected_player(all_players)
+	_set_player_infected.rpc(random_infected_peer_id, true)
 
-	print("Player %s is now infected!" % random_infected.name)
+	print("Player %s is now infected!" % random_infected_peer_id)
 
 	# Start active gameplay
 	_update_round_state.rpc(current_round, GameState.PLAYING)
 	score_tick_timer.start()
+
+
+
+#returns the peer_id of the next infected player weighted exponentially (with damping term infection_score_damping)
+func _determine_next_infected_player(all_players: Array[Node]) -> int:
+	#for all arrays in this function, values are assigned element-wise respective to the all_players array. 
+	#i loop through indicies from all_players.size() to make this clear
+	
+	#use the Softmax staistical function to create probabilities based on the score. 
+	# Eq. 1: Pi = e^Zi / sum(e^Zj)) 
+	# Where: 
+	# 	 Pi = the i'th players probability of infection
+	# Zi,Zj = the i'th and j'th player scores.
+	
+	#first, we must find the maximum of all the scores so we can translate the scores on the number line to prevent float.inf overflows.
+	#its called the Log-Sum-Exp Trick. it works because the Softmax function is 'shift-invariant'.
+	#for math nerds, its cuz e^Zi / sum(e^Zj) = e^(Zi - max) / sum(e^(Zj - max)). it prevents e^(Zi - max) from ever being larger than 1.
+	var biggest_score: int = 0
+	var all_scores: Array[int] = []
+	for i: int in all_players.size():
+		var score: int = Global.get_player_score(int(all_players[i].name))
+		all_scores.append(score)
+		if biggest_score < score:
+			biggest_score = score
+	
+	#now, translate all the scores.
+	var translated_scores: Array[int] = []
+	for i: int in all_players.size():
+		translated_scores.append(all_scores[i] - biggest_score)
+	
+	#calculate all terms to compute the probability of each player being infected
+	var exponential_sum: float = 0#= sum(e^Zj)
+	var exponential_scores: Array[float] = []#= e^Zi for all i
+	for i: int in all_players.size():
+		var exp_score: float = exp(translated_scores[i] / infection_score_damping)#e^Zi, with Zi translated by the highest score.
+		exponential_sum += exp_score#sum(e^Zj)
+		exponential_scores.append(exp_score)
+	
+	#now calculate those probabilities
+	var probabilities: Array[float] = []
+	for i: int in all_players.size():
+		probabilities.append(exponential_scores[i] / exponential_sum)
+	
+	print("player probabilites: %s\nplayer scores: %s" % [probabilities,all_scores])
+	#now turn those probabilities into blocks between 0 and 1 so we can sample a random number between 0 and 1 to choose a player.
+	#i = 0 will be a block of [0->P0], i = 1 block is [P0->P0+P1], i=2 block is [P0+P1->P0+P1+P2], etc.
+	var cumulative_boundaries: Array[float] = []
+	for i: int in all_players.size():
+		var boundary_max: float = probabilities[i]
+		if i != 0:#implying that cumulative_boundaries.size() > 0,
+			boundary_max = cumulative_boundaries[i - 1] + probabilities[i] # P0 + P1 for example, then P0+P1+P2
+		cumulative_boundaries.append(boundary_max)
+	
+	var random_number: float = randf()
+	
+	#now choose a number based on the cumulative probability blocks defined previously
+	var player_chosen: Node
+	for i: int in all_players.size():
+		var boundary: float = cumulative_boundaries[i]
+		if random_number < boundary:
+			player_chosen = all_players[i]
+			break
+	return int(player_chosen.name)
+
 
 
 # Award points every second to non-infected players
