@@ -1,6 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
+const ONE_WAY_LAYER: int = 2
+
+
 @export var animated_sprite_2d: AnimatedSprite2D
 @export var player_name: Label
 
@@ -31,6 +34,7 @@ var is_infected: bool = false
 @onready var wall_check_left: RayCast2D = $WallCheckLeft
 @onready var wall_check_right: RayCast2D = $WallCheckRight
 @onready var infection_area: Area2D = $InfectionArea
+@onready var one_way_check: Area2D = $OneWayCheck
 @onready var fart_sound: AudioStreamPlayer = $FartSound
 
 
@@ -52,31 +56,42 @@ func _physics_process(delta: float) -> void:
 	# Only process input for the player we control
 	if not is_multiplayer_authority():
 		return
-
+	
 	# Apply gravity
 	if not is_on_floor():
 		velocity.y = min(velocity.y + get_gravity().y * gravity_scale * delta, max_fall_speed)
-
-	# Track floor state for jump resets
+	
+	# Handle landing
 	if is_on_floor() and not was_on_floor:
 		_on_landed()
 	was_on_floor = is_on_floor()
-
+	
+	#Handle one-way platforms
+	_handle_one_way()
+	
 	# Handle wall sliding
 	_handle_wall_slide()
-
+	
 	# Handle jumping
 	_handle_jump()
-
+	
 	# Handle horizontal movement
 	_handle_movement(delta)
-
+	
 	# Apply movement
 	move_and_slide()
-
+	
 	# Update animations
 	_update_animation()
 
+# Handles the one-way platform functionality.
+func _handle_one_way() -> void:
+	# The only time that a one way platform should have collision is when: its detected by the check, the player is moving downwards, and the down direction is not pressed.
+	if one_way_check.has_overlapping_bodies() && velocity.y >= 0 && !Input.is_action_pressed("fall_through"):
+		# We set the collision by modifying our own collision layers.
+		set_collision_mask_value(ONE_WAY_LAYER,true)
+	else:
+		set_collision_mask_value(ONE_WAY_LAYER,false)
 
 # Handles horizontal movement with acceleration and friction
 func _handle_movement(delta: float) -> void:
