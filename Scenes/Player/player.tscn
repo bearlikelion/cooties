@@ -47,7 +47,6 @@ radius = 15.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_7g0yx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mtuoh"]
-size = Vector2(36, 20)
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite_2d", "player_name")]
 collision_mask = 3
