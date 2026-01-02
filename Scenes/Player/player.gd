@@ -61,7 +61,7 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y = min(velocity.y + get_gravity().y * gravity_scale * delta, max_fall_speed)
 	
-	# Handle landing
+	# Track floor state for jump resets
 	if is_on_floor() and not was_on_floor:
 		_on_landed()
 	was_on_floor = is_on_floor()
