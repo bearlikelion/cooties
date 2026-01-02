@@ -84,6 +84,7 @@ func _physics_process(delta: float) -> void:
 	# Update animations
 	_update_animation()
 
+
 # Handles the one-way platform functionality.
 func _handle_one_way() -> void:
 	# The only time that a one way platform should have collision is when: its detected by the check, the player is moving downwards, and the down direction is not pressed.
@@ -92,6 +93,7 @@ func _handle_one_way() -> void:
 		set_collision_mask_value(ONE_WAY_LAYER,true)
 	else:
 		set_collision_mask_value(ONE_WAY_LAYER,false)
+
 
 # Handles horizontal movement with acceleration and friction
 func _handle_movement(delta: float) -> void:
