@@ -87,7 +87,7 @@ func _physics_process(delta: float) -> void:
 
 # Handles the one-way platform functionality.
 func _handle_one_way() -> void:
-	# The only time that a one way platform should have collision is when: its detected by the check, the player is moving downwards, and the down direction is not pressed.
+	# The only time that a one way platform should have collision is when: its detected by the check, the player is moving downwards or resting, and the down direction is not pressed.
 	if one_way_check.has_overlapping_bodies() && velocity.y >= 0 && !Input.is_action_pressed("fall_through"):
 		# We set the collision by modifying our own collision layers.
 		set_collision_mask_value(ONE_WAY_LAYER,true)
