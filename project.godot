@@ -28,6 +28,10 @@ gdscript/warnings/untyped_declaration=1
 
 window/stretch/mode="viewport"
 
+[dotnet]
+
+project/assembly_name="Cooties"
+
 [file_customization]
 
 folder_colors={

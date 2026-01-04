@@ -1,7 +1,12 @@
 class_name Player
 extends CharacterBody2D
 
-const ONE_WAY_LAYER: int = 2
+enum {
+	NULL,
+	DEFAULT_LAYER,
+	ONE_WAY_LAYER,
+	BOUNCY_LAYER
+}
 
 
 @export var animated_sprite_2d: AnimatedSprite2D
@@ -65,7 +70,7 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor() and not was_on_floor:
 		_on_landed()
 	was_on_floor = is_on_floor()
-	
+
 	#Handle one-way platforms
 	_handle_one_way()
 	
@@ -79,10 +84,44 @@ func _physics_process(delta: float) -> void:
 	_handle_movement(delta)
 	
 	# Apply movement
-	move_and_slide()
-	
+	_apply_physics()
+
 	# Update animations
 	_update_animation()
+
+
+func _apply_physics() -> void:
+	# store velocity and position and then call move_and_slide()
+	var vel: Vector2 = velocity
+	var pos1: Vector2 = global_position
+	move_and_slide()
+	
+	var pos2: Vector2 = global_position
+	
+	var col: KinematicCollision2D = get_last_slide_collision()
+	if !col: return
+	
+	# If it detects a bouncy thing, bounce.
+	if !(PhysicsServer2D.body_get_collision_layer(col.get_collider_rid()) & BOUNCY_LAYER):
+		var new_vel: Vector2 = _bouncy_col_math(vel, col.get_normal())
+		velocity = new_vel
+		move_and_slide()
+		# put it back to the same vertical delta from the platform surface as it was before any move_and_slide(). this eliminates height gain when bouncing but doesnt mess with movement relative to the normal direction.
+		var delta: Vector2 = pos2 - pos1
+		var n: Vector2 = col.get_normal()
+		var proj: Vector2 = n * delta.dot(n)
+		global_position = pos2 - proj
+		_on_landed()
+
+
+# Does the math for a bouncy collision against a static object.
+func _bouncy_col_math(vel: Vector2, normal: Vector2) -> Vector2:
+	# First, project the vel vector onto the normal
+	# This shortened version  of projection math only works cuz we know normal is a unit vector
+	var proj: Vector2 = normal * vel.dot(normal)
+	
+	#Then, we take that component and minus it twice off the current velocity. boom. elastic collision against static wall.
+	return vel - 2 * proj
 
 
 # Handles the one-way platform functionality.
@@ -98,7 +137,7 @@ func _handle_one_way() -> void:
 # Handles horizontal movement with acceleration and friction
 func _handle_movement(delta: float) -> void:
 	var input_direction: float = Input.get_axis("move_left", "move_right")
-
+	
 	# Fallback to UI actions if custom actions don't exist
 	if input_direction == 0.0:
 		input_direction = Input.get_axis("ui_left", "ui_right")
@@ -201,7 +240,7 @@ func _update_animation() -> void:
 func _on_infection_area_body_entered(body: Node2D) -> void:
 	if not multiplayer.is_server() or not is_infected:
 		return
-
+	
 	if body is Player and not body.is_infected:
 		var game: Game = get_tree().get_first_node_in_group("game")
 		if game:
