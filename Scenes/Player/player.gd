@@ -107,13 +107,15 @@ func _apply_physics() -> void:
 		velocity = new_vel
 		move_and_slide()
 		_bouncy_position_correction(pos1, pos2, col.get_normal())
-
+		
 		_on_landed()
+
 
 # when you call move_and_slide(), it steps the position forward in physics space. doing it a second time for the second move_and_slide() causes kinetic energy increases over time.
 # youve gotta correct the second move_and_slide() call so you dont gain energy by just bouncing. this puts you at the same distance you had to the surface before colliding.
 func _bouncy_position_correction(pos1: Vector2, pos2: Vector2, normal: Vector2) -> void:
 	global_position = pos2 - normal * (pos2 - pos1).dot(normal)
+
 
 # Does the math for a bouncy collision against a static object.
 func _bouncy_col_math(vel: Vector2, normal: Vector2) -> Vector2:
