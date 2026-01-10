@@ -93,7 +93,7 @@ func _on_round_delay_complete() -> void:
 		print("No players available, ending game")
 		_end_game()
 		return
-	
+
 	# Select random player to be infected
 	var random_infected_peer_id: int = _determine_next_infected_player(all_players)
 	_set_player_infected.rpc(random_infected_peer_id, true)
@@ -108,19 +108,19 @@ func _on_round_delay_complete() -> void:
 
 # returns the peer_id of the next infected player weighted exponentially (with damping term infection_score_damping)
 func _determine_next_infected_player(all_players: Array[Node]) -> int:
-	# use the Softmax staistical function to create probabilities based on the score. 
-	# Eq. 1: P = e^Z / sum(e^Zj)) 
-	# Where: 
+	# use the Softmax staistical function to create probabilities based on the score.
+	# Eq. 1: P = e^Z / sum(e^Zj))
+	# Where:
 	# 	 P = the player probability of infection
 	# 	 Z = the player score
 	# 	Zj = the j'th player score
-	
+
 	# gather all the scores.
 	var scores: Array[int] = []
 	for player: Node in all_players:
 		scores.append(Global.get_player_score(int(player.name)))
 	var max_score: int = scores.max()
-	
+
 	# calculate the shifted exponetial values for use in Eq. 1
 	# essentially, exponentials are 'shift-invariant' so shifting scores keeps everything to scale while preventing float.inf
 	# See https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/ for more information
@@ -130,16 +130,16 @@ func _determine_next_infected_player(all_players: Array[Node]) -> int:
 		var exp_score: float = exp((score - max_score) / infection_score_damping)
 		exp_sum += exp_score
 		exp_scores.append(exp_score)
-	
+
 	# now actually calculate the probabilities
 	var probabilities: Array[float] = []
 	for exp_score: float in exp_scores:
 		probabilities.append(exp_score / exp_sum)
-	
+
 	print("Infection probabilities: %s\nPlayer scores: %s" % [probabilities, scores])
-	
+
 	var random_number: float = randf()
-	
+
 	# now determine the player infected via cumulative distribution
 	var infected_peer_id: int = 0
 	var cumulative_prob: float = 0
@@ -148,7 +148,7 @@ func _determine_next_infected_player(all_players: Array[Node]) -> int:
 		if random_number < cumulative_prob:
 			infected_peer_id = int(all_players[i].name)
 			break
-	
+
 	return infected_peer_id
 
 
