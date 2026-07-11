@@ -40,11 +40,11 @@ func _ready() -> void:
 
 
 func _on_character_changed(index: int) -> void:
-	_update_character_sprite.rpc(index)
+	# Store the selection in Global on every peer, player_info_updated handles the sprite
+	Global.set_player_character.rpc(get_multiplayer_authority(), index)
 
 
-# Updates the character sprite texture across all clients
-@rpc("any_peer", "call_local", "reliable")
+# Updates the character sprite texture from the selected index
 func _update_character_sprite(index: int) -> void:
 	var character_texture: Resource
 
@@ -60,10 +60,6 @@ func _update_character_sprite(index: int) -> void:
 
 	character_sprite.texture = character_texture
 
-	# Update Global via RPC to sync across all clients
-	var peer_id: int = multiplayer.get_remote_sender_id()
-	Global.set_player_character.rpc(peer_id, index)
-
 
 # Called when ready button is toggled
 func _on_ready_button_toggled(toggled_on: bool) -> void:
@@ -75,7 +71,7 @@ func _on_ready_button_toggled(toggled_on: bool) -> void:
 func _set_ready(player_ready: bool) -> void:
 	is_ready = player_ready
 
-	if ready:
+	if player_ready:
 		ready_button.modulate = Color("#6fb365")  # Green
 	else:
 		ready_button.modulate = Color.WHITE
@@ -92,6 +88,9 @@ func _on_player_info_updated(peer_id: int) -> void:
 
 	if Global.players[peer_id].name != player_name.text:
 		player_name.text = Global.players[peer_id].name
+
+	if Global.players[peer_id].character > -1:
+		_update_character_sprite(Global.players[peer_id].character)
 
 	if Global.players[peer_id].character != character_option.selected:
 		character_option.select(Global.players[peer_id].character)

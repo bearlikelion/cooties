@@ -56,9 +56,6 @@ func send_player_to_peer(peer_id: int, player_data: Dictionary) -> void:
 func _on_peer_disconnected(peer_id: int) -> void:
 	players.erase(peer_id)
 
-	if peer_id == 1:
-		change_level("res://Scenes/MainMenu/main_menu.tscn")
-
 
 # Called when this client successfully connects to server
 func _on_connected_to_server() -> void:
@@ -90,17 +87,27 @@ func send_player_to_server(player: Dictionary) -> void:
 		_sync_players_to_peer.rpc_id(sender_id, players)
 
 
-# Called when server disconnects
+# Called when server disconnects, clean up and return to the main menu
 func _on_server_disconnected() -> void:
+	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+		Steam.leaveLobby(SteamInit.lobby_id)
+		SteamInit.lobby_id = 0
+		SteamInit.peer = SteamMultiplayerPeer.new()
+
 	clear_players()
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	change_level("res://Scenes/MainMenu/main_menu.tscn")
 
 
 # Set player character selection via RPC
 @rpc("any_peer", "call_local", "reliable")
 func set_player_character(peer_id: int, character_index: int) -> void:
-	# HACK: This is a hacky bugfix for an issue when returning to lobbby after a game ends
-	# The character_select.gd runs set_player_character too early sending as peer_id 0
-	if peer_id > 0 and players.has(peer_id):
+	# Reject peers attempting to change another player's character
+	var sender: int = multiplayer.get_remote_sender_id()
+	if sender != 0 and sender != peer_id:
+		return
+
+	if players.has(peer_id):
 		players[peer_id]["character"] = character_index
 		player_info_updated.emit(peer_id)
 
@@ -139,11 +146,11 @@ func get_player_score(peer_id: int) -> int:
 	return 0
 
 
-# Set player score via RPC
-@rpc("any_peer", "call_local", "reliable")
+# Set player score, only ever called by the server via Game's authority RPCs
 func set_player_score(peer_id: int, new_score: int) -> void:
-	players[peer_id]["score"] = new_score
-	player_info_updated.emit(peer_id)
+	if players.has(peer_id):
+		players[peer_id]["score"] = new_score
+		player_info_updated.emit(peer_id)
 
 
 # Clear all player data

@@ -200,6 +200,13 @@ size_flags_horizontal = 8
 theme = ExtResource("3_qgdf6")
 text = "Back"
 
+[node name="ConnectionStatus" type="Label" parent="MarginContainer/VBoxContainer/GameLobbies"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+label_settings = SubResource("LabelSettings_qgdf6")
+horizontal_alignment = 1
+
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/HostGame" to="." method="_on_host_game_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/JoinGame" to="." method="_on_join_game_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Enet/Connect" to="." method="_on_connect_pressed"]

@@ -13,6 +13,7 @@ enum  MultiplayerBackend { ENET, STEAM }
 @onready var enet: HBoxContainer = %Enet
 @onready var steam: VBoxContainer = %Steam
 @onready var ip_address: LineEdit = %IPAddress
+@onready var connection_status: Label = %ConnectionStatus
 
 
 func _ready() -> void:
@@ -30,6 +31,7 @@ func _ready() -> void:
 func _on_join_game_pressed() -> void:
 	game_buttons.hide()
 	game_lobbies.show()
+	connection_status.text = ""
 
 	match backend.selected:
 		MultiplayerBackend.ENET:
@@ -83,7 +85,13 @@ func join_lobby(lobby_id: int) -> void:
 	Steam.joinLobby(lobby_id)
 
 
-func _on_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, _response: int) -> void:
+func _on_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, response: int) -> void:
+	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
+		connection_status.text = "Failed to join lobby (response %d)" % response
+		for lobby_button: Button in get_tree().get_nodes_in_group("lobby_button"):
+			lobby_button.disabled = false
+		return
+
 	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
 		Global.change_level("res://Scenes/Lobby/lobby.tscn")
 		return
@@ -92,9 +100,10 @@ func _on_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, _response
 	SteamInit.peer.connect_to_lobby(lobby_id)
 	multiplayer.multiplayer_peer = SteamInit.peer
 
-	# Wait for player data to sync from server
-	await Global.players_synced
-	Global.change_level("res://Scenes/Lobby/lobby.tscn")
+	# Wait for player data to sync from server before entering the lobby
+	connection_status.text = "Connecting..."
+	multiplayer.connection_failed.connect(_on_connection_failed, CONNECT_ONE_SHOT)
+	Global.players_synced.connect(_on_players_synced, CONNECT_ONE_SHOT)
 
 
 func get_lobbies() -> void:
@@ -113,6 +122,15 @@ func _clear_lobby_list() -> void:
 func _on_back_pressed() -> void:
 	print("Back to menu")
 	_clear_lobby_list()
+	connection_status.text = ""
+
+	# Cancel any pending connection attempt
+	if Global.players_synced.is_connected(_on_players_synced):
+		Global.players_synced.disconnect(_on_players_synced)
+		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	if multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.disconnect(_on_connection_failed)
+
 	game_lobbies.hide()
 	game_buttons.show()
 
@@ -145,10 +163,33 @@ func _on_connect_pressed() -> void:
 	var error: Error = peer.create_client(ip_address.text, 7777)
 	if error:
 		print("Client Error: %s" % error)
-	else:
-		Global.ip_address = ip_address.text
-		multiplayer.multiplayer_peer = peer
+		connection_status.text = "Client Error: %s" % error_string(error)
+		return
 
-		# Wait for player data to sync from server
-		await Global.players_synced
-		Global.change_level("res://Scenes/Lobby/lobby.tscn")
+	Global.ip_address = ip_address.text
+	multiplayer.multiplayer_peer = peer
+
+	# Wait for player data to sync from server before entering the lobby
+	connection_status.text = "Connecting..."
+	multiplayer.connection_failed.connect(_on_connection_failed, CONNECT_ONE_SHOT)
+	Global.players_synced.connect(_on_players_synced, CONNECT_ONE_SHOT)
+
+
+# Called once player data has synced from the server, enter the lobby
+func _on_players_synced() -> void:
+	if multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.disconnect(_on_connection_failed)
+
+	Global.change_level("res://Scenes/Lobby/lobby.tscn")
+
+
+# Called when the connection attempt fails, reset the peer and show an error
+func _on_connection_failed() -> void:
+	if Global.players_synced.is_connected(_on_players_synced):
+		Global.players_synced.disconnect(_on_players_synced)
+
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	connection_status.text = "Connection failed"
+
+	for lobby_button: Button in get_tree().get_nodes_in_group("lobby_button"):
+		lobby_button.disabled = false

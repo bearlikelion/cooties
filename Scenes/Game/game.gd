@@ -7,6 +7,7 @@ enum GameState { WAITING, PLAYING, ROUND_END, GAME_OVER }
 @export var round_delay: float = 3.0
 @export var scoreboard_delay: float = 4.0
 @export var score_tick_rate: float = 1.0
+@export var game_over_delay: float = 8.0
 
 # how dampened the score scaling is against starter infection chance (low = strong, high = weak)
 @export var infection_score_damping: float = 20
@@ -31,7 +32,10 @@ func _ready() -> void:
 	if not multiplayer.is_server():
 		return
 
-	Steam.setLobbyJoinable(SteamInit.lobby_id, false)
+	# Block mid-game joiners, they would have no player data and crash on spawn
+	multiplayer.multiplayer_peer.refuse_new_connections = true
+	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
+		Steam.setLobbyJoinable(SteamInit.lobby_id, false)
 
 	_setup_timers()
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
@@ -67,6 +71,9 @@ func _start_round() -> void:
 	if not multiplayer.is_server():
 		return
 
+	# Ensure the score tick is stopped, the restart path can re-enter here mid-round
+	score_tick_timer.stop()
+
 	current_round += 1
 	print("Starting Round %d of %d" % [current_round, max_rounds])
 
@@ -75,7 +82,7 @@ func _start_round() -> void:
 		_respawn_players()
 
 	# Update UI for all clients
-	_update_round_state.rpc(current_round, GameState.WAITING)
+	_update_round_state.rpc(current_round, GameState.WAITING, round_delay)
 
 	# Reset all players to non-infected state
 	for player: Player in players_node.get_children():
@@ -94,16 +101,19 @@ func _on_round_delay_complete() -> void:
 		_end_game()
 		return
 
+	# Start active gameplay before infecting so the announcement lands during PLAYING
+	_update_round_state.rpc(current_round, GameState.PLAYING, 0.0)
+
 	# Select random player to be infected
 	var random_infected_peer_id: int = _determine_next_infected_player(all_players)
 	_set_player_infected.rpc(random_infected_peer_id, true)
 
 	print("Player %s is now infected!" % random_infected_peer_id)
 
-	# Start active gameplay
-	_update_round_state.rpc(current_round, GameState.PLAYING)
 	score_tick_timer.start()
 
+	# With a single player the round is already over, no one is left to infect
+	_check_round_end()
 
 
 # returns the peer_id of the next infected player weighted exponentially (with damping term infection_score_damping)
@@ -207,7 +217,7 @@ func _end_round() -> void:
 	if current_round >= max_rounds:
 		_end_game()
 	else:
-		_update_round_state.rpc(current_round, GameState.ROUND_END)
+		_update_round_state.rpc(current_round, GameState.ROUND_END, 0.0)
 		scoreboard_timer.start(scoreboard_delay)
 
 
@@ -216,24 +226,24 @@ func _on_scoreboard_complete() -> void:
 	_start_round()
 
 
-# End the game and determine winner
+# End the game and show the final rankings
 func _end_game() -> void:
 	score_tick_timer.stop()
-	_update_round_state.rpc(current_round, GameState.GAME_OVER)
+	_update_round_state.rpc(current_round, GameState.GAME_OVER, 0.0)
 
-	# Find winner (highest score)
-	var winner_peer_id: int = -1
-	var highest_score: int = -1
-
+	# Build the final rankings sorted by score descending
+	var rankings: Array[Dictionary] = []
 	for peer_id: int in Global.players.keys():
-		var score: int = Global.get_player_score(peer_id)
-		if score > highest_score:
-			highest_score = score
-			winner_peer_id = peer_id
+		rankings.append({
+			"peer_id": peer_id,
+			"name": Global.get_player_name(peer_id),
+			"character": Global.get_player_character(peer_id),
+			"score": Global.get_player_score(peer_id)
+		})
+	rankings.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.score > b.score)
 
-	if winner_peer_id != -1:
-		var winner_name: String = Global.get_player_name(winner_peer_id)
-		_announce_winner.rpc(winner_name, highest_score)
+	# Always fires, even with no rankings, so every peer returns to the lobby
+	_show_game_over.rpc(rankings)
 
 
 # Called by player when collision detected
@@ -281,15 +291,20 @@ func _set_player_infected(peer_id: int, infected: bool) -> void:
 	if hud:
 		hud.update_infection_display(peer_id, infected)
 
+		# Tell the local player they are it
+		if infected and peer_id == multiplayer.get_unique_id() and current_state == GameState.PLAYING:
+			hud.show_announcement("You have cooties! Tag someone!")
+
 
 # RPC: Update round state on all clients
 @rpc("authority", "call_local", "reliable")
-func _update_round_state(this_round: int, state: GameState) -> void:
+func _update_round_state(this_round: int, state: GameState, countdown: float) -> void:
 	current_round = this_round
 	current_state = state
 
 	if hud:
 		hud.update_round_display(current_round, max_rounds)
+		hud.show_state(state, current_round, countdown)
 
 	print("Round state updated: Round %d, State: %s" % [this_round, GameState.keys()[state]])
 
@@ -303,14 +318,15 @@ func _update_player_score(peer_id: int, new_score: int) -> void:
 		hud.update_score_display(peer_id, new_score)
 
 
-# RPC: Announce game winner
+# RPC: Show the game over screen, then return everyone to the lobby
 @rpc("authority", "call_local", "reliable")
-func _announce_winner(winner_name: String, final_score: int) -> void:
-	# TODO: Show winner screen/overlay in UI
+func _show_game_over(rankings: Array[Dictionary]) -> void:
 	print("=== GAME OVER ===")
-	print("Winner: %s with %d points!" % [winner_name, final_score])
 
-	await get_tree().create_timer(5.0).timeout
+	if hud:
+		hud.show_game_over(rankings, game_over_delay)
+
+	await get_tree().create_timer(game_over_delay).timeout
 	Global.change_level("res://Scenes/Lobby/lobby.tscn")
 
 

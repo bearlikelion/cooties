@@ -4,6 +4,7 @@ extends Control
 const CHARACTER_SELECT = preload("res://Scenes/UI/character_select.tscn")
 
 var upnp_thread: Thread
+var upnp: UPNP
 
 @onready var lobby_id: Label = %LobbyId
 @onready var players: HBoxContainer = %Players
@@ -14,6 +15,10 @@ func _ready() -> void:
 
 	# Reset scores when returning to lobby
 	Global.reset_scores()
+
+	# Accept new connections again, they are refused while a game is running
+	if multiplayer.is_server():
+		multiplayer.multiplayer_peer.refuse_new_connections = false
 
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer and SteamInit.lobby_id > 0:
 		lobby_id.text = "Lobby ID: %s" % SteamInit.lobby_id
@@ -60,6 +65,9 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if character_select:
 		character_select.queue_free()
 
+		# The remaining players may now all be ready
+		check_all_ready.call_deferred()
+
 
 # Checks if all players are ready and starts the game
 func check_all_ready() -> void:
@@ -70,7 +78,7 @@ func check_all_ready() -> void:
 	var all_ready: bool = true
 
 	for character_select: Node in players.get_children():
-		if character_select is CharacterSelect:
+		if character_select is CharacterSelect and not character_select.is_queued_for_deletion():
 			if not character_select.is_ready:
 				all_ready = false
 				break
@@ -86,15 +94,18 @@ func _start_game() -> void:
 	Global.change_level("res://Scenes/Game/game.tscn")
 
 
-# Thread function to discover UPNP and get external IP
+# Thread function to discover UPNP, map the game port, and get the external IP
 func _discover_upnp() -> void:
-	var upnp: UPNP = UPNP.new()
+	upnp = UPNP.new()
 	var discover_result: int = upnp.discover()
 
 	if discover_result == UPNP.UPNP_RESULT_SUCCESS:
+		# Forward the game port so clients can actually reach the external IP
+		var map_result: int = upnp.add_port_mapping(7777, 7777, "Cooties", "UDP")
+
 		var external_ip: String = upnp.query_external_address()
 		if external_ip != "":
-			call_deferred("_update_lobby_ip", external_ip)
+			call_deferred("_update_lobby_ip", external_ip, map_result == UPNP.UPNP_RESULT_SUCCESS)
 		else:
 			call_deferred("_update_lobby_ip_fallback")
 	else:
@@ -102,8 +113,11 @@ func _discover_upnp() -> void:
 
 
 # Updates lobby IP text (called from thread)
-func _update_lobby_ip(external_ip: String) -> void:
-	lobby_id.text = "External IP: %s" % external_ip
+func _update_lobby_ip(external_ip: String, port_mapped: bool) -> void:
+	if port_mapped:
+		lobby_id.text = "External IP: %s" % external_ip
+	else:
+		lobby_id.text = "External IP: %s (port mapping failed)" % external_ip
 
 
 # Fallback to local IP if UPNP fails
@@ -125,7 +139,12 @@ func _on_disconnect_pressed() -> void:
 	# If Steam, leave lobby and reset peer
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		Steam.leaveLobby(SteamInit.lobby_id)
+		SteamInit.lobby_id = 0
 		SteamInit.peer = SteamMultiplayerPeer.new()
+
+	# Remove the UPNP port mapping when the ENet host shuts the lobby down
+	if multiplayer.is_server() and multiplayer.multiplayer_peer is ENetMultiplayerPeer and upnp:
+		upnp.delete_port_mapping(7777, "UDP")
 
 	# Reset players array and fallback to OfflineMultiplayerPeer
 	Global.clear_players()

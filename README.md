@@ -41,8 +41,8 @@ Cooties is a fast-paced infection/tag multiplayer platformer game where players 
 ## Technical Details
 
 ### Engine
-- [Godot 4.5](https://godotengine.org/download/archive/4.5.1-stable/)
-- [GodotSteam 4.17](https://godotsteam.com/getting_started/what_are_you_making/)
+- [Godot 4.7](https://godotengine.org/download/archive/4.7-stable/)
+- [GodotSteam 4.20](https://godotsteam.com/getting_started/what_are_you_making/)
 - [Rapier2D Physics with Cross Platform Deterministic](https://godot.rapier.rs/)
 - Steamworks v1.63
 - Staticly typed GDScript
