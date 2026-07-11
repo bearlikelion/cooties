@@ -7,7 +7,7 @@ Additional Flavors
 Standard Module | Standard Plug-ins | Server Module | Server Plug-ins | Examples
 --- | --- | --- | --- | ---
 [Godot 2.x](https://codeberg.org/godotsteam/godotsteam/src/branch/godot2) | [GDNative](https://codeberg.org/godotsteam/godotsteam/src/branch/gdnative) | [Server 3.x](https://codeberg.org/godotsteam/godotsteam-server/src/branch/godot3) | [GDNative](https://codeberg.org/godotsteam/godotsteam-server/src/branch/gdnative) | [Skillet](https://codeberg.org/godotsteam/skillet)
-[Godot 3.x](https://codeberg.org/godotsteam/godotsteam/src/branch/godot3) | [GDExtension](https://codeberg.org/godotsteam/godotsteam/src/branch/gdextension) | [Server 4.x](https://codeberg.org/godotsteam/godotsteam-server/src/branch/godot4) | [GDExtension](https://codeberg.org/godotsteam/godotsteam-server/src/branch/gdextension) | ---
+[Godot 3.x](https://codeberg.org/godotsteam/godotsteam/src/branch/godot3) | [GDExtension](https://codeberg.org/godotsteam/godotsteam/src/branch/gdextension) | [Server 4.x](https://codeberg.org/godotsteam/godotsteam-server/src/branch/godot4) | [GDExtension](https://codeberg.org/godotsteam/godotsteam-server/src/branch/gdextension) | [Skillet UGC Editor](https://codeberg.org/godotsteam/skillet/src/branch/ugc_editor)
 [Godot 4.x](https://codeberg.org/godotsteam/godotsteam/src/branch/godot4) | --- | --- | --- | ---
 [MultiplayerPeer](https://codeberg.org/godotsteam/multiplayerpeer)| --- | --- | --- | ---
 
@@ -16,7 +16,7 @@ Documentation
 ---
 [Documentation is available here](https://godotsteam.com/).  You can also check out the Search Help section inside Godot Engine.  [To start, try checking out our tutorial on initializing Steam.](https://godotsteam.com/tutorials/initializing/)  There are additional tutorials, with more in the works.  You can also [check out additional Godot and Steam related videos, text, additional tools, plug-ins, etc. here.](https://godotsteam.com/resources/external/)
 
-Feel free to chat with us about GodotSteam or ask for assistance on the [Discord server](https://discord.gg/SJRSq6K).
+Feel free to chat with us about GodotSteam or ask for assistance on the [Stoat server](https://stt.gg/9DxQ3Dcd) or [IRC on Libera Chat](irc://irc.libera.chat/#godotsteam).
 
 
 Donate
@@ -28,19 +28,23 @@ Current Build
 ---
 You can [download pre-compiled versions of this repo here](https://codeberg.org/godotsteam/godotsteam/releases).
 
-**Version 4.17 Changes**
-- Added: new enums to Result, HTTPStatusCode, RemotePlayScanCode, ActionOrigin per Steam SDK 1.63
-- Added: `getDecompressedVoice()` as custom function to wrap up `getVoice()` and `decompressVoice()` in C++
-- Added: missing HTMLMouseCursor enum binds
-- Changed: converted functions entirely over to the Flat API system
-- Changed: `activateGameOverlayInviteDialog()` changed argument name from steam_id to lobby_id for clarity
-- Changed: renamed some minor parameters
-- Changed: `getAPICallFailureReason()` now returns enum instead of string
-- Changed: error messages if Steam is not initialized or classes are missing
-- Fixed: `initFilterText()` now takes filter options
-- Fixed: `sendMessages()` not compiling correctly
-- Fixed: VOICE_RESULT_NO_DATA incorrectly named VOICE_RESULT_NO_DATE
-- Removed: GameSearch and Music Remote classes, constants, enums per Steam SDK 1.63
+**Version 4.20 Changes**
+
+- Added: app type toggle in Project Settings
+- Added: various app ID fields for game, demo, playtest, and tool to ProjectSettings
+- Added: update process to convert old project settings to new format
+- Added: check for mismatched Steam API file on Windows and Steam
+- Added: new tutorial links to in-editor docs
+- Added: binds for `get_connection_handle()` and `get_state()` for SteamPacketPeer, thanks to ***jdbool***
+- Changed: initialization process can use correct ID based on app type setting
+- Changed: `initFilterText()` no longer takes argument as it is meant for future use
+- Changed: `lobby_data_update` callback now returns bool for success parameter
+- Changed: PERSONA_CHANGE_FACEBOOK_INFO updated to PERSONA_CHANGE_BROADCAST
+- Fixed: `filterText()` breaking character encoding during filtering process
+- Fixed: missing networking enum binds
+- Fixed: minor in-editor doc regressions
+- Fixed: minor enum regressions
+- Fixed: crash in `lobby_chat_update` when lobby member leaves with MultiplayerPeer, thanks to ***bearlikelion***
 
 [You can read more change-logs here](https://godotsteam.com/changelog/gdextension/).
 
@@ -67,12 +71,15 @@ GodotSteam Version | Broken Compatibility
 4.11 | setLeaderboardDetailsMax removed
 4.13 | getItemDefinitionProperty return a dictionary, html_needs_paint key 'bgra' changed to 'rbga'
 4.14 | Removed first argument for stat request in steamInit and steamInitEx, steamInit returns intended bool value
-4.16 | Variety of small break points, refer to [4.16 changelog for details](https://godotsteam.com/changelog/godot4/)
+4.16 | Variety of small break points, refer to [4.16 changelog for details](https://godotsteam.com/changelog/godot4/#version-416)
+4.17 | Windows projects using Steam SDK 1.63 are meant to work with Proton 11 or Experimental on Linux / Steam Deck.
+4.19 | Lots of changes to Voice functions, refer to [4.19 changelog for details](https://godotsteam.com/changelog/godot4/#version-419)
+4.20 | Godot 4.7 changed callable_method_pointer.h to callable_mp.h which will break backwards compatibilty
 
 
 Known Issues
 ---
-- GDExtension for 4.1 is **not** compatible with 4.0.3 or lower. Please check the versions you are using.
+- GDExtension for 4.4 is **not** compatible with 4.3.x or lower. Please check the versions you are using.
 - Overlay will not work in the editor but will work in export projects when uploaded to Steam.  This seems to a limitation with Vulkan currently.
 
 
@@ -85,9 +92,16 @@ Alternatively, you can just [download the pre-compiled versions in our Releases 
 
 Usage
 ---
+Once the plug-in is added to your project, the Steam class should be available and ready to go. Enabling the plug-in in the ProjectSettings only affects the Steamworks dock and not the actual functionality.
+
 Do not use the GDExtension version of GodotSteam with any of the module versions whether it be our pre-compiled versions or ones you compile.  They are not compatible with each other.
 
 When exporting with the GDExtension version, please use the normal Godot Engine templates instead of our GodotSteam templates or you will have a lot of issues.
+
+
+No LLM Policy / No "AI" Policy
+---
+No LLMs are allowed to be used for issues, patches, or pull-requests.  They will be closed or rejected and the submitter may be blocked from future submissions.
 
 
 License
