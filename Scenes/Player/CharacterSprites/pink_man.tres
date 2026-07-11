@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=43 format=3 uid="uid://cfy6mnakd0y3w"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://cfy6mnakd0y3w"]
 
 [ext_resource type="Texture2D" uid="uid://cxy28yebnh46s" path="res://Assets/Images/Characters/Pink Man/Double Jump (32x32).png" id="1_etcvm"]
 [ext_resource type="Texture2D" uid="uid://d08yhdm4ih53" path="res://Assets/Images/Characters/Pink Man/Fall (32x32).png" id="2_gvwcf"]
@@ -172,7 +172,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_dxc4b")
 }],
-"loop": true,
+"loop": 1,
 "name": &"double_jump",
 "speed": 20.0
 }, {
@@ -180,7 +180,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_8e38d")
 }],
-"loop": true,
+"loop": 1,
 "name": &"fall",
 "speed": 20.0
 }, {
@@ -218,7 +218,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_1hu7l")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 20.0
 }, {
@@ -226,7 +226,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_2sruo")
 }],
-"loop": true,
+"loop": 1,
 "name": &"jump",
 "speed": 20.0
 }, {
@@ -267,7 +267,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4uujy")
 }],
-"loop": true,
+"loop": 1,
 "name": &"run",
 "speed": 20.0
 }, {
@@ -287,7 +287,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_cqc85")
 }],
-"loop": true,
+"loop": 1,
 "name": &"wall_jump",
 "speed": 20.0
 }]

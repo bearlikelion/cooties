@@ -16,6 +16,5 @@ func _ready() -> void:
 		steam_name = Steam.getPersonaName()
 
 
-
 func _process(_delta: float) -> void:
 	Steam.run_callbacks()

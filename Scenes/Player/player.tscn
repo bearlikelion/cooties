@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://drqmqwoh706dl"]
+[gd_scene format=3 uid="uid://drqmqwoh706dl"]
 
 [ext_resource type="Script" uid="uid://ds0q8ob5wehgr" path="res://Scenes/Player/player.gd" id="1_a3d8c"]
 [ext_resource type="SpriteFrames" uid="uid://cfy6mnakd0y3w" path="res://Scenes/Player/CharacterSprites/pink_man.tres" id="2_a3d8c"]
@@ -46,16 +46,16 @@ radius = 15.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7g0yx"]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite_2d", "player_name")]
+[node name="Player" type="CharacterBody2D" unique_id=354440547 node_paths=PackedStringArray("animated_sprite_2d", "player_name")]
 script = ExtResource("1_a3d8c")
 animated_sprite_2d = NodePath("AnimatedSprite2D")
 player_name = NodePath("PlayerName")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=467728990]
 replication_config = SubResource("SceneReplicationConfig_jlvik")
 visibility_update_mode = 1
 
-[node name="PlayerName" type="Label" parent="."]
+[node name="PlayerName" type="Label" parent="." unique_id=1666092768]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -70,32 +70,32 @@ theme = ExtResource("3_xpcdj")
 text = "NAME"
 horizontal_alignment = 1
 
-[node name="Infected" type="GPUParticles2D" parent="."]
+[node name="Infected" type="GPUParticles2D" parent="." unique_id=994534763]
 amount = 30
 lifetime = 1.2
 process_material = SubResource("ParticleProcessMaterial_htcer")
 
-[node name="InfectionArea" type="Area2D" parent="."]
+[node name="InfectionArea" type="Area2D" parent="." unique_id=1931919591]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InfectionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InfectionArea" unique_id=1359166755]
 shape = SubResource("CircleShape2D_xpcdj")
 debug_color = Color(0, 1, 0, 0.42000002)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=971329698]
 position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_7g0yx")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=193694410]
 sprite_frames = ExtResource("2_a3d8c")
 animation = &"wall_jump"
 autoplay = "idle"
 
-[node name="WallCheckLeft" type="RayCast2D" parent="."]
+[node name="WallCheckLeft" type="RayCast2D" parent="." unique_id=451673643]
 target_position = Vector2(-15, 0)
 
-[node name="WallCheckRight" type="RayCast2D" parent="."]
+[node name="WallCheckRight" type="RayCast2D" parent="." unique_id=1074628693]
 target_position = Vector2(15, 0)
 
-[node name="FartSound" type="AudioStreamPlayer" parent="."]
+[node name="FartSound" type="AudioStreamPlayer" parent="." unique_id=1436903693]
 stream = ExtResource("4_mtuoh")
 volume_db = -15.0
