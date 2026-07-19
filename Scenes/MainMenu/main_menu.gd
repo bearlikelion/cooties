@@ -6,6 +6,7 @@ enum  MultiplayerBackend { ENET, STEAM }
 @onready var steam_warning: Label = %SteamWarning
 @onready var host_game: Button = %HostGame
 @onready var join_game: Button = %JoinGame
+@onready var exit_game: Button = %ExitGame
 @onready var game_buttons: VBoxContainer = %GameButtons
 @onready var game_lobbies: VBoxContainer = %GameLobbies
 @onready var lobby_list: VBoxContainer = %LobbyList
@@ -156,6 +157,11 @@ func _on_host_game_pressed() -> void:
 		MultiplayerBackend.STEAM:
 			print("Hosting Steam Lobby")
 			Steam.createLobby(Steam.LobbyType.LOBBY_TYPE_PUBLIC, 4)
+
+
+# Quit the game from the main menu
+func _on_exit_game_pressed() -> void:
+	get_tree().quit()
 
 
 func _on_connect_pressed() -> void:

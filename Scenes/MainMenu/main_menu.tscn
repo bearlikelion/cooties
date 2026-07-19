@@ -128,6 +128,12 @@ layout_mode = 2
 theme = ExtResource("3_qgdf6")
 text = "Join Game"
 
+[node name="ExitGame" type="Button" parent="MarginContainer/VBoxContainer/GameButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_qgdf6")
+text = "Exit Game"
+
 [node name="GameLobbies" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 visible = false
@@ -209,6 +215,7 @@ horizontal_alignment = 1
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/HostGame" to="." method="_on_host_game_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/JoinGame" to="." method="_on_join_game_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GameButtons/ExitGame" to="." method="_on_exit_game_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Enet/Connect" to="." method="_on_connect_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Enet/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/GameLobbies/Steam/HBoxContainer/Refresh" to="." method="_on_refresh_pressed"]
