@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=4 uid="uid://djdrs1ttx56ws"]
+[gd_scene load_steps=11 format=4 uid="uid://djdrs1ttx56ws"]
 
 [ext_resource type="PackedScene" uid="uid://bo56j43srbd" path="res://Scenes/UI/hud.tscn" id="1_ciybh"]
+[ext_resource type="PackedScene" uid="uid://cpmenu0xkq1vt" path="res://Scenes/UI/pause_menu.tscn" id="1_pause"]
 [ext_resource type="Script" uid="uid://cg7uqwvlfj70i" path="res://Scenes/Game/game.gd" id="1_flgk0"]
 [ext_resource type="Shader" uid="uid://t0au8n652f0h" path="res://Shaders/texture_scroll.gdshader" id="1_qxfds"]
 [ext_resource type="Texture2D" uid="uid://j0hk7wu6dy6v" path="res://Assets/Images/Backgrounds/Brown.png" id="2_qikps"]
@@ -270,3 +271,5 @@ position = Vector2(1048, 40)
 
 [node name="Marker2D4" type="Marker2D" parent="PlayerSpawner/SpawnPoints"]
 position = Vector2(104, 40)
+
+[node name="PauseMenu" parent="." instance=ExtResource("1_pause")]

@@ -15,6 +15,8 @@ enum  MultiplayerBackend { ENET, STEAM }
 @onready var steam: VBoxContainer = %Steam
 @onready var ip_address: LineEdit = %IPAddress
 @onready var connection_status: Label = %ConnectionStatus
+@onready var refresh: Button = %Refresh
+@onready var connect_button: Button = %Connect
 
 
 func _ready() -> void:
@@ -28,6 +30,16 @@ func _ready() -> void:
 		Steam.lobby_created.connect(_on_lobby_created)
 		Steam.lobby_joined.connect(_on_lobby_joined)
 
+	# Focus the first button so controllers can navigate the menu
+	host_game.grab_focus()
+
+
+# Controller/keyboard back navigation from the lobby browser
+func _unhandled_input(event: InputEvent) -> void:
+	if game_lobbies.visible and event.is_action_pressed("ui_cancel"):
+		_on_back_pressed()
+		get_viewport().set_input_as_handled()
+
 
 func _on_join_game_pressed() -> void:
 	game_buttons.hide()
@@ -38,14 +50,18 @@ func _on_join_game_pressed() -> void:
 		MultiplayerBackend.ENET:
 			enet.show()
 			steam.hide()
+			connect_button.grab_focus()
 		MultiplayerBackend.STEAM:
 			enet.hide()
 			steam.show()
+			refresh.grab_focus()
 			get_lobbies()
 
 
 func _on_lobby_match_list(lobbies: Array) -> void:
 	print("Lobbies Found: %s" % lobbies.size())
+
+	var first_button: Button = null
 
 	for lobby_id: int in lobbies:
 		var lobby_name: String = Steam.getLobbyData(lobby_id, "name")
@@ -58,6 +74,13 @@ func _on_lobby_match_list(lobbies: Array) -> void:
 		lobby_button.add_to_group("lobby_button")
 		lobby_button.pressed.connect(join_lobby.bind(lobby_id))
 		lobby_list.add_child(lobby_button)
+
+		if first_button == null:
+			first_button = lobby_button
+
+	# Focus the first lobby so controllers can pick one straight away
+	if first_button:
+		first_button.grab_focus()
 
 
 func _on_lobby_created(connected: int, lobby_id: int) -> void:
@@ -134,6 +157,7 @@ func _on_back_pressed() -> void:
 
 	game_lobbies.hide()
 	game_buttons.show()
+	join_game.grab_focus()
 
 
 func _on_refresh_pressed() -> void:
@@ -199,3 +223,13 @@ func _on_connection_failed() -> void:
 
 	for lobby_button: Button in get_tree().get_nodes_in_group("lobby_button"):
 		lobby_button.disabled = false
+
+	# Restore controller focus after the failed attempt
+	if enet.visible:
+		connect_button.grab_focus()
+	elif lobby_list.get_child_count() > 0:
+		var first_lobby: Button = lobby_list.get_child(0) as Button
+		if first_lobby:
+			first_lobby.grab_focus()
+	else:
+		refresh.grab_focus()

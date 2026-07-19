@@ -8,6 +8,9 @@ enum Characters { VIRTUALGUY, PINKMAN, NINJAFROG, MASKDUDE }
 
 var ip_address: String = "127.0.0.1"
 
+# True while the in-game pause menu is open, the local player ignores input
+var menu_open: bool = false
+
 # Dictionary storing player information by peer_id
 # Structure: {peer_id: {character: int, name: String, score: int}}
 var players: Dictionary = {}
@@ -89,11 +92,17 @@ func send_player_to_server(player: Dictionary) -> void:
 
 # Called when server disconnects, clean up and return to the main menu
 func _on_server_disconnected() -> void:
+	disconnect_from_game()
+
+
+# Leave the current lobby/game, reset the peer, and return to the main menu
+func disconnect_from_game() -> void:
 	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
 		Steam.leaveLobby(SteamInit.lobby_id)
 		SteamInit.lobby_id = 0
 		SteamInit.peer = SteamMultiplayerPeer.new()
 
+	menu_open = false
 	clear_players()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	change_level("res://Scenes/MainMenu/main_menu.tscn")

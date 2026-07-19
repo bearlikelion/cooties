@@ -80,11 +80,15 @@ func _physics_process(delta: float) -> void:
 
 # Handles horizontal movement with acceleration and friction
 func _handle_movement(delta: float) -> void:
-	var input_direction: float = Input.get_axis("move_left", "move_right")
+	var input_direction: float = 0.0
 
-	# Fallback to UI actions if custom actions don't exist
-	if input_direction == 0.0:
-		input_direction = Input.get_axis("ui_left", "ui_right")
+	# Ignore movement input while the pause menu is open
+	if not Global.menu_open:
+		input_direction = Input.get_axis("move_left", "move_right")
+
+		# Fallback to UI actions if custom actions don't exist
+		if input_direction == 0.0:
+			input_direction = Input.get_axis("ui_left", "ui_right")
 
 	if input_direction != 0.0:
 		# Accelerate towards target speed
@@ -99,6 +103,10 @@ func _handle_movement(delta: float) -> void:
 
 # Handles jump, double jump, and wall jump
 func _handle_jump() -> void:
+	# Ignore jump input while the pause menu is open
+	if Global.menu_open:
+		return
+
 	var jump_pressed: bool = Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("ui_accept")
 
 	if not jump_pressed:

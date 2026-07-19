@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://cpmenu0xkq1vt"]
+
+[ext_resource type="Script" path="res://Scenes/UI/pause_menu.gd" id="1_pause"]
+[ext_resource type="Theme" uid="uid://oxn4h4ypbx2q" path="res://cooties.tres" id="2_pause"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pause"]
+font_size = 64
+font_color = Color(0.67058825, 0.59607846, 0.8, 1)
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 10
+visible = false
+script = ExtResource("1_pause")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+layout_mode = 2
+theme = ExtResource("2_pause")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PausedLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_pause")
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_pause")
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_pause")
+text = "Resume"
+
+[node name="DisconnectButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+modulate = Color(0.84313726, 0, 0.27058825, 1)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_pause")
+text = "Disconnect"
+
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/DisconnectButton" to="." method="_on_disconnect_pressed"]

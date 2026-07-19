@@ -18,6 +18,10 @@ func _ready() -> void:
 		character_option.disabled = true
 		ready_button.disabled = true
 
+		# Keep controller focus off other players' controls
+		character_option.focus_mode = Control.FOCUS_NONE
+		ready_button.focus_mode = Control.FOCUS_NONE
+
 		if Global.players.has(int(name)) and Global.players[int(name)].character > -1:
 			_update_character_sprite(Global.players[int(name)].character)
 			character_option.select(Global.players[int(name)].character)
@@ -37,6 +41,9 @@ func _ready() -> void:
 		else:
 			_update_character_sprite(Global.players[multiplayer.get_unique_id()].character)
 			character_option.select(Global.players[multiplayer.get_unique_id()].character)
+
+		# Focus our own character select so controllers can navigate the lobby
+		character_option.grab_focus()
 
 
 func _on_character_changed(index: int) -> void:

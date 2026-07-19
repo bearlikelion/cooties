@@ -154,6 +154,7 @@ theme = ExtResource("3_qgdf6")
 placeholder_text = "Enter Ip Address to Connect To"
 
 [node name="Connect" type="Button" parent="MarginContainer/VBoxContainer/GameLobbies/Enet"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 theme = ExtResource("3_qgdf6")

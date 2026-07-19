@@ -136,17 +136,8 @@ func _exit_tree() -> void:
 
 
 func _on_disconnect_pressed() -> void:
-	# If Steam, leave lobby and reset peer
-	if multiplayer.multiplayer_peer is SteamMultiplayerPeer:
-		Steam.leaveLobby(SteamInit.lobby_id)
-		SteamInit.lobby_id = 0
-		SteamInit.peer = SteamMultiplayerPeer.new()
-
 	# Remove the UPNP port mapping when the ENet host shuts the lobby down
 	if multiplayer.is_server() and multiplayer.multiplayer_peer is ENetMultiplayerPeer and upnp:
 		upnp.delete_port_mapping(7777, "UDP")
 
-	# Reset players array and fallback to OfflineMultiplayerPeer
-	Global.clear_players()
-	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
-	Global.change_level("res://Scenes/MainMenu/main_menu.tscn")
+	Global.disconnect_from_game()
