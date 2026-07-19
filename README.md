@@ -1,5 +1,7 @@
 # Cooties
 
+### **View my GodotCon '26 presentation: [Making Games Multiplayer](https://markmakes.games/godotcon26/)**
+
 ### **Checkout the game's [Itch.io page](https://bearlikelion.itch.io/cooties)** for downloads & releases.
 
 P2P multiplayer tutorial for Godot using [Steam Networking Sockets](https://partner.steamgames.com/doc/api/ISteamnetworkingSockets) and traditional IP/Port connections through [ENet](https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html). This project utilizes RPC Calls, MultiplayerSpawner, and MultiplayerSynchronizer nodes with physics interpolation for other peers.
